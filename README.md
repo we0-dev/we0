@@ -1,3 +1,5 @@
+[![English](https://img.shields.io/badge/README-English-494cad.svg)](https://github.com/we0-dev/we0/blob/main/README.md) [![中文](https://img.shields.io/badge/README-中文-494cad.svg)](https://github.com/we0-dev/we0/blob/main/README.zh.md) 
+
 # we-dev
 
 ## What is We-dev
@@ -40,11 +42,11 @@ npm install pnpm -g
 - Install dependencies
 
 ```bash
-#客户端服务
+# Client
 cd apps/we-dev-client
 pnpm install
 
-# 后端服务
+# Server
 cd apps/we-dev/we-dev-next
 pnpm install
 
@@ -55,23 +57,26 @@ pnpm install
 Rename .env.example to .env and fill in the corresponding content.
 
 ```shell
-# 前端 apps/we-dev-client/.env.example
+# Client apps/we-dev-client/.env.example
 
-# 服务端地址 必填 例如 http://localhost:3000
+# SERVER_ADDRESS [MUST*] (eg: http://localhost:3000)
 APP_BASE_URL=
 
-# jwt 密钥 选填
+# JWT_SECRET [Optional]
 JWT_SECRET=
 
-# 后端服务 apps/we-dev-next/.env.example
+# Servers apps/we-dev-next/.env.example
 
-# 第三方模型api 必填 例如 https://api2.aigcbest.top/v1
+# Third-Party Model URL [MUST*] (eg: https://api2.aigcbest.top/v1)
 THIRD_API_URL=
-# 第三方模型api key 必填 例如 sk-xxxx
+
+# Third-Party Model API-Key [MUST*] (eg:sk-xxxx)
 THIRD_API_KEY=
-# jwt 密钥 选填
+
+# JWT_SECRET [Optional]
 JWT_SECRET=
-# monogo地址
+
+# MongoDB_URI
 MONGODB_URI=
 ```
 
