@@ -85,7 +85,7 @@ export async function middleware(request: NextRequest) {
     if (PUBLIC_PATHS.some((path) => pathname.startsWith(path))) {
       if (pathname.startsWith("/api/chat")) {
         const { messages } = (await request.json()) as { messages: Messages };
-        if (messages.length <= 6 && !token) {
+        if (messages.length <= 10000 && !token) {
           return addCorsHeaders(NextResponse.next());
         }
       } else {

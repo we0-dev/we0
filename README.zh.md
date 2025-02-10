@@ -41,7 +41,7 @@ cd apps/we-dev-client
 pnpm install
 
 # 后端服务
-cd apps/we-dev/we-dev-next
+cd apps/we-dev-next
 pnpm install
 
 ```
@@ -61,7 +61,7 @@ JWT_SECRET=
 
 # 后端服务 apps/we-dev-next/.env.example
 
-# 第三方模型api 必填 例如 https://api2.aigcbest.top/v1
+# 第三方模型api 必填 例如 https://api.openai.com/v1
 THIRD_API_URL=
 # 第三方模型api key 必填 例如 sk-xxxx
 THIRD_API_KEY=
