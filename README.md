@@ -4,7 +4,7 @@
 
 ## What is We0
 
-![alt text](image-1.png)
+![alt text](./docs/img/image-1.png)
 
 ## What Makes We0 Different?
 
@@ -104,21 +104,34 @@ How to Use the Client Version?
   1. Go to https://we0.ai/.
   2. Select Download for Mac to download the installer.
   3. You might encounter an issue:
-     ![alt text](image-2.png)
+     ![alt text](./docs/img/image-2.png)
 - Open Launchpad, select Terminal, and enter:
   `sudo spctl  --master-disable`
   hen press Enter, enter your password (the password input is invisible), and press Enter again.
   Next, open System Preferences, select Security & Privacy, then General, and you will see Anywhere selected.
-  ![alt text](image-3.png)
+  ![alt text](./docs/img/image-3.png)
+  Then open the file to install.
 
-Then open the file to install.
-If it still shows "Damaged and cannot be opened. You should move it to the Trash," don't worry. Use the following method:
-Copy and paste the command in the terminal (note the space at the end):
-sudo xattr -r -d com.apple.quarantine
-Do not press Enter yet! Do not press Enter yet! Do not press Enter yet! Do not press Enter yet!
-Then open Finder, go to the Applications directory, find the software icon, and drag it into the terminal window. You will get a combination like this (as shown in the image):
-sudo xattr -r -d com.apple.quarantine /Applications/WebStrom.app
-Return to the terminal window, press Enter, and enter your system password to proceed.
+
+- If it still shows "Damaged and cannot be opened. You should move it to the Trash" 
+
+  don't worry. Use the following method:
+
+  Copy and paste the command in the terminal (note the space at the end):
+
+  ```bash
+  sudo xattr -r -d com.apple.quarantine
+  ```
+
+  **Do not press Enter yet! Do not press Enter yet! Do not press Enter yet! Do not press Enter yet!**
+
+  Then open Finder, go to the Applications directory, find the software icon, and drag it into the terminal window. You will get a combination like this (as shown in the image):
+
+  ```bash
+  sudo xattr -r -d com.apple.quarantine /Applications/WebStrom.app
+  ```
+
+  Return to the terminal window, press Enter, and enter your system password to proceed.
 
 ## Contact US
 
