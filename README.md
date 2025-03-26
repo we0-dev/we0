@@ -47,7 +47,7 @@ cd apps/we-dev-client
 pnpm install
 
 # Server
-cd apps/we-dev/we-dev-next
+cd apps/we-dev-next
 pnpm install
 
 ```
