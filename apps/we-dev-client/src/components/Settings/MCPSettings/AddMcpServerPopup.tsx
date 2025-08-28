@@ -102,7 +102,7 @@ const CustomModal = ({ children, title, open, onOk, onCancel, okText, cancelText
     )
 }
 
-const FormField = ({ label, required, children, error, tooltip }) => (
+const FormField = ({ label, required, children, error, tooltip }: { label: any; required?: any; children: any; error?: any; tooltip?: any }) => (
     <div className="mb-4">
         <div className="flex items-center gap-2 mb-1.5">
             <label className="block text-sm font-medium text-gray-700 dark:text-gray-300">
@@ -127,7 +127,7 @@ const FormField = ({ label, required, children, error, tooltip }) => (
     </div>
 )
 
-const Input = ({ value, onChange, placeholder, disabled, className = "" }) => (
+const Input = ({ value, onChange, placeholder, disabled, className = "" }: { value: any; onChange: any; placeholder: any; disabled?: any; className?: string }) => (
     <input
         value={value}
         onChange={onChange}
@@ -147,7 +147,7 @@ const Input = ({ value, onChange, placeholder, disabled, className = "" }) => (
     />
 )
 
-const TextArea = ({ value, onChange, placeholder, rows = 3, className = "" }) => (
+const TextArea = ({ value, onChange, placeholder, rows = 3, className = "" }: { value: any; onChange: any; placeholder: any; rows?: number; className?: string }) => (
     <textarea
         value={value}
         onChange={onChange}
