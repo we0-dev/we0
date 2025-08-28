@@ -17,6 +17,7 @@ import useThemeStore from "@/stores/themeSlice";
 import { v4 as uuidv4 } from "uuid";
 import OptimizedPromptWord from "./OptimizedPromptWord";
 import useUserStore from "@/stores/userSlice";
+import { useAIProviderStore } from "@/stores/aiProviderSlice";
 // import type { ModelOption } from './UploadButtons';
 
 export enum ChatMode {
@@ -54,6 +55,22 @@ export const ChatInput: React.FC<ChatInputPropsType> = ({
   const textareaRef = useRef<HTMLTextAreaElement>(null);
   const { t } = useTranslation();
   const { user } = useUserStore();
+  const {
+    provider,
+    availableModels,
+    selectedModel,
+    setProvider,
+    setSelectedModel,
+  } = useAIProviderStore();
+  const providerOptions = [
+    { value: "openai", label: "OpenAI" },
+    { value: "anthropic", label: "Anthropic" },
+    { value: "google", label: "Google" },
+    { value: "groq", label: "Groq" },
+    { value: "deepseek", label: "DeepSeek" },
+    { value: "ollama", label: "Ollama" },
+    { value: "azure-openai", label: "Azure" },
+  ];
   const [showMentionMenu, setShowMentionMenu] = useState(false);
   const [selectedMentionIndex, setSelectedMentionIndex] = useState(0);
   const [mentionPosition, setMentionPosition] = useState({ top: 0, left: 0 });
@@ -377,6 +394,29 @@ export const ChatInput: React.FC<ChatInputPropsType> = ({
   return (
     <div className="px-1 py-2 ">
       <div className="max-w-[640px] w-full mx-auto bg-[#fff] dark:bg-[#18181a]">
+        <div className="flex items-center gap-2 mb-2 text-xs">
+          <select
+            className="px-2 py-1 rounded border border-gray-600/30 bg-transparent"
+            value={provider}
+            onChange={(e) => setProvider(e.target.value as any)}
+          >
+            {providerOptions.map((p) => (
+              <option key={p.value} value={p.value}>
+                {p.label}
+              </option>
+            ))}
+          </select>
+          <select
+            className="px-2 py-1 rounded border border-gray-600/30 bg-transparent flex-1"
+            value={selectedModel || ""}
+            onChange={(e) => setSelectedModel(e.target.value)}
+          >
+            <option value="" disabled>select model</option>
+            {(availableModels || []).map((m) => (
+              <option key={m} value={m}>{m}</option>
+            ))}
+          </select>
+        </div>
         <ErrorDisplay
           errors={errors}
           onAttemptFix={async (error, index) => {
