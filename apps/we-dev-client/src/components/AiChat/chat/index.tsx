@@ -60,7 +60,7 @@ export const excludeFiles = [
     "/miniprogram/components/weicon/index.css",
 ];
 
-const API_BASE = process.env.APP_BASE_URL;
+const API_BASE = process.env.APP_BASE_URL || "";
 console.log(API_BASE, 'API_BASE')
 
 enum ModelTypes {
