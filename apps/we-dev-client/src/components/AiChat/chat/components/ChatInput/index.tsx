@@ -18,6 +18,7 @@ import { v4 as uuidv4 } from "uuid";
 import OptimizedPromptWord from "./OptimizedPromptWord";
 import useUserStore from "@/stores/userSlice";
 import { useAIProviderStore } from "@/stores/aiProviderSlice";
+import { fetchModelsForProvider } from "@/api/models";
 // import type { ModelOption } from './UploadButtons';
 
 export enum ChatMode {
@@ -61,6 +62,8 @@ export const ChatInput: React.FC<ChatInputPropsType> = ({
     selectedModel,
     setProvider,
     setSelectedModel,
+    setAvailableModels,
+    apiKeys,
   } = useAIProviderStore();
   const providerOptions = [
     { value: "openai", label: "OpenAI" },
@@ -398,7 +401,14 @@ export const ChatInput: React.FC<ChatInputPropsType> = ({
           <select
             className="px-2 py-1 rounded border border-gray-600/30 bg-transparent"
             value={provider}
-            onChange={(e) => setProvider(e.target.value as any)}
+            onChange={async (e) => {
+              const p = e.target.value as any;
+              setProvider(p);
+              const key = (apiKeys as any)[p] || "";
+              const models = await fetchModelsForProvider(p, key);
+              setAvailableModels(models);
+              if (models.length) setSelectedModel(models[0]);
+            }}
           >
             {providerOptions.map((p) => (
               <option key={p.value} value={p.value}>
