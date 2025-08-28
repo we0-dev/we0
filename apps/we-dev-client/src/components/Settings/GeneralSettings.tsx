@@ -227,17 +227,39 @@ export function GeneralSettings() {
 
   const handleProviderChange = async (newProvider: any) => {
     setProvider(newProvider);
-    const models = await fetchModelsForProvider(newProvider, apiKeys[newProvider as keyof typeof apiKeys] || "");
-    setAvailableModels(models);
-    setSelectedModel(models[0]);
+    try {
+      const key = apiKeys[newProvider as keyof typeof apiKeys] || "";
+      const models = await fetchModelsForProvider(newProvider, key);
+      setAvailableModels(models);
+      setSelectedModel(models[0]);
+      const needsKey = ["openai", "anthropic", "google", "groq", "azure-openai"].includes(newProvider);
+      if (needsKey && !key) {
+        message.warning("Please set API key for the selected provider.");
+      } else if (needsKey && (!models || models.length === 0)) {
+        message.error("Failed to load models. Check API key/permissions.");
+      }
+    } catch (e) {
+      message.error("Error loading models for provider.");
+      setAvailableModels([]);
+      setSelectedModel(undefined);
+    }
   };
 
   const handleApiKeyChange = async (e: React.ChangeEvent<HTMLInputElement>) => {
     const key = e.target.value;
     setApiKey(provider, key);
-    const models = await fetchModelsForProvider(provider, key);
-    setAvailableModels(models);
-    if (!models.includes(selectedModel || "")) setSelectedModel(models[0]);
+    try {
+      const models = await fetchModelsForProvider(provider, key);
+      setAvailableModels(models);
+      if (!models.includes(selectedModel || "")) setSelectedModel(models[0]);
+      if (!models || models.length === 0) {
+        message.warning("No models returned. Verify API key/plan.");
+      }
+    } catch {
+      message.error("Failed to fetch models. Check API key.");
+      setAvailableModels([]);
+      setSelectedModel(undefined);
+    }
   };
 
   useEffect(() => {

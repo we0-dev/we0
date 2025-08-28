@@ -405,9 +405,21 @@ export const ChatInput: React.FC<ChatInputPropsType> = ({
               const p = e.target.value as any;
               setProvider(p);
               const key = (apiKeys as any)[p] || "";
+              const needsKey = ["openai", "anthropic", "google", "groq", "azure-openai"].includes(p);
+              if (needsKey && !key) {
+                toast("Please set API key in Settings for this provider.");
+                setAvailableModels([]);
+                setSelectedModel("");
+                return;
+              }
               const models = await fetchModelsForProvider(p, key);
               setAvailableModels(models);
-              if (models.length) setSelectedModel(models[0]);
+              if (models.length) {
+                setSelectedModel(models[0]);
+              } else {
+                toast("No models returned for provider. Check key/permissions.");
+                setSelectedModel("");
+              }
             }}
           >
             {providerOptions.map((p) => (
