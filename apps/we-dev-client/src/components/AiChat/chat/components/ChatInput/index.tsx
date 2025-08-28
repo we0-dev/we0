@@ -86,6 +86,25 @@ export const ChatInput: React.FC<ChatInputPropsType> = ({
   ];
 
   const [combinedModels, setCombinedModels] = React.useState<Array<{ provider: string; id: string; label: string }>>([]);
+  const providerDocs: Record<string, string> = {
+    "openai": "https://platform.openai.com/docs/api-reference",
+    "anthropic": "https://docs.anthropic.com/en/api",
+    "google": "https://ai.google.dev/gemini-api/docs",
+    "groq": "https://console.groq.com/docs/overview",
+    "deepseek": "https://api-docs.deepseek.com",
+    "ollama": "https://github.com/ollama/ollama/blob/main/docs/api.md",
+    "azure-openai": "https://learn.microsoft.com/azure/ai-services/openai/reference",
+    "mistral": "https://docs.mistral.ai/api/",
+    "cohere": "https://docs.cohere.com/reference",
+    "perplexity": "https://docs.perplexity.ai",
+    "together": "https://docs.together.ai/docs/introduction",
+    "huggingface": "https://huggingface.co/docs/api-inference/index",
+    "fireworks": "https://readme.fireworks.ai/reference",
+    "openrouter": "https://openrouter.ai/docs",
+    "xai": "https://docs.x.ai/docs/api-reference",
+    "deepinfra": "https://deepinfra.com/docs",
+    "replicate": "https://replicate.com/docs/reference/http",
+  };
 
   const loadProviderModels = React.useCallback(async (prov: string) => {
     const key = (apiKeys as any)[prov] || "";
@@ -456,6 +475,18 @@ export const ChatInput: React.FC<ChatInputPropsType> = ({
             ))}
           </select>
         </div>
+        {selectedModel && (
+          <div className="-mt-1 mb-2 text-[10px] text-right">
+            <a
+              href={providerDocs[provider] || '#'}
+              target="_blank"
+              rel="noreferrer"
+              className="text-blue-600 dark:text-blue-400 hover:underline"
+            >
+              Provider API docs
+            </a>
+          </div>
+        )}
         <ErrorDisplay
           errors={errors}
           onAttemptFix={async (error, index) => {

@@ -235,6 +235,26 @@ export function GeneralSettings() {
     { value: "replicate", label: "Replicate" },
   ];
 
+  const providerDocs: Record<string, string> = {
+    "openai": "https://platform.openai.com/docs/api-reference",
+    "anthropic": "https://docs.anthropic.com/en/api",
+    "google": "https://ai.google.dev/gemini-api/docs",
+    "groq": "https://console.groq.com/docs/overview",
+    "deepseek": "https://api-docs.deepseek.com",
+    "ollama": "https://github.com/ollama/ollama/blob/main/docs/api.md",
+    "azure-openai": "https://learn.microsoft.com/azure/ai-services/openai/reference",
+    "mistral": "https://docs.mistral.ai/api/",
+    "cohere": "https://docs.cohere.com/reference",
+    "perplexity": "https://docs.perplexity.ai",
+    "together": "https://docs.together.ai/docs/introduction",
+    "huggingface": "https://huggingface.co/docs/api-inference/index",
+    "fireworks": "https://readme.fireworks.ai/reference",
+    "openrouter": "https://openrouter.ai/docs",
+    "xai": "https://docs.x.ai/docs/api-reference",
+    "deepinfra": "https://deepinfra.com/docs",
+    "replicate": "https://replicate.com/docs/reference/http",
+  };
+
   const handleProviderChange = async (newProvider: any) => {
     setProvider(newProvider);
     try {
@@ -866,6 +886,16 @@ export function GeneralSettings() {
                 onChange={handleApiKeyChange}
                 placeholder={"Enter API Key for " + provider}
               />
+            </div>
+            <div className="mt-2 text-xs">
+              <a
+                href={providerDocs[provider.replace(" (Gemini)", "")] || "#"}
+                target="_blank"
+                rel="noreferrer"
+                className="text-blue-600 dark:text-blue-400 hover:underline"
+              >
+                View {providerOptions.find(p=>p.value===provider)?.label || provider} API docs
+              </a>
             </div>
           </div>
 
