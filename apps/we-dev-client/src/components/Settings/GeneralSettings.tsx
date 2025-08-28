@@ -7,6 +7,8 @@ import { useTranslation } from "react-i18next";
 import { Switch, Select, Input, Radio, message } from "antd";
 import { BackendSettings } from "./BackendSettings";
 import classNames from "classnames";
+import { useAIProviderStore } from "@/stores/aiProviderSlice";
+import { fetchModelsForProvider } from "@/api/models";
 
 interface OtherConfig {
   isBackEnd: boolean;
@@ -196,6 +198,47 @@ export function GeneralSettings() {
   const [currentTheme, setCurrentTheme] = useState(
     localStorage.getItem("theme") || "system"
   );
+
+  const {
+    provider,
+    apiKeys,
+    availableModels,
+    selectedModel,
+    setProvider,
+    setApiKey,
+    setAvailableModels,
+    setSelectedModel,
+    hydrateFromStorage,
+  } = useAIProviderStore();
+
+  useEffect(() => {
+    hydrateFromStorage();
+  }, [hydrateFromStorage]);
+
+  const providerOptions = [
+    { value: "openai", label: "OpenAI" },
+    { value: "anthropic", label: "Anthropic" },
+    { value: "google", label: "Google (Gemini)" },
+    { value: "groq", label: "Groq" },
+    { value: "deepseek", label: "DeepSeek" },
+    { value: "ollama", label: "Ollama (Local)" },
+    { value: "azure-openai", label: "Azure OpenAI" },
+  ];
+
+  const handleProviderChange = async (newProvider: any) => {
+    setProvider(newProvider);
+    const models = await fetchModelsForProvider(newProvider, apiKeys[newProvider as keyof typeof apiKeys] || "");
+    setAvailableModels(models);
+    setSelectedModel(models[0]);
+  };
+
+  const handleApiKeyChange = async (e: React.ChangeEvent<HTMLInputElement>) => {
+    const key = e.target.value;
+    setApiKey(provider, key);
+    const models = await fetchModelsForProvider(provider, key);
+    setAvailableModels(models);
+    if (!models.includes(selectedModel || "")) setSelectedModel(models[0]);
+  };
 
   useEffect(() => {
     localStorage.setItem("settingsConfig", JSON.stringify(formData));
@@ -776,6 +819,32 @@ export function GeneralSettings() {
               )}
             </div>
           )}
+
+          {/* AI Provider Settings */}
+          <div className="mt-4">
+            <div className="mb-2 font-semibold">AI Provider</div>
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-3">
+              <CustomSelect
+                value={provider}
+                onChange={handleProviderChange}
+                options={providerOptions}
+              />
+              <CustomInput
+                value={apiKeys[provider] || ""}
+                onChange={handleApiKeyChange}
+                placeholder={"Enter API Key for " + provider}
+              />
+            </div>
+          </div>
+
+          <div>
+            <div className="mb-2 font-semibold">Default Model</div>
+            <CustomSelect
+              value={selectedModel}
+              onChange={(v: any) => setSelectedModel(v)}
+              options={(availableModels || []).map((m) => ({ value: m, label: m }))}
+            />
+          </div>
         </div>
       </div>
     </div>

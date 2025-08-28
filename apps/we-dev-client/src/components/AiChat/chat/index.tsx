@@ -23,6 +23,7 @@ import {checkExecList, checkFinish} from "../utils/checkFinish";
 import {useUrlData} from "@/hooks/useUrlData";
 import {MCPTool} from "@/types/mcp";
 import useMCPTools from "@/hooks/useMCPTools";
+import { useAIProviderStore } from "@/stores/aiProviderSlice";
 
 type WeMessages = (Message & {
     experimental_attachments?: Array<{
@@ -331,6 +332,18 @@ export const BaseChat = ({uuid: propUuid}: { uuid?: string }) => {
             setMcpTools([])
         }
     }, [enabledMCPs])
+
+    const { provider, selectedModel } = useAIProviderStore();
+    useEffect(() => {
+        if (selectedModel) {
+            setBaseModal((prev) => ({
+                ...prev,
+                value: selectedModel,
+                label: selectedModel,
+                from: provider,
+            }));
+        }
+    }, [provider, selectedModel]);
 
     // 修改 useChat 配置
     const {
