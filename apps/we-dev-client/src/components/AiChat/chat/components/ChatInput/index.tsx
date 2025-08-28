@@ -73,6 +73,16 @@ export const ChatInput: React.FC<ChatInputPropsType> = ({
     { value: "deepseek", label: "DeepSeek" },
     { value: "ollama", label: "Ollama" },
     { value: "azure-openai", label: "Azure" },
+    { value: "mistral", label: "Mistral" },
+    { value: "cohere", label: "Cohere" },
+    { value: "perplexity", label: "Perplexity" },
+    { value: "together", label: "Together" },
+    { value: "huggingface", label: "Hugging Face" },
+    { value: "fireworks", label: "Fireworks" },
+    { value: "openrouter", label: "OpenRouter" },
+    { value: "xai", label: "xAI" },
+    { value: "deepinfra", label: "DeepInfra" },
+    { value: "replicate", label: "Replicate" },
   ];
   const [showMentionMenu, setShowMentionMenu] = useState(false);
   const [selectedMentionIndex, setSelectedMentionIndex] = useState(0);

@@ -7,7 +7,17 @@ export type AIProvider =
   | "groq"
   | "deepseek"
   | "ollama"
-  | "azure-openai";
+  | "azure-openai"
+  | "mistral"
+  | "cohere"
+  | "perplexity"
+  | "together"
+  | "huggingface"
+  | "fireworks"
+  | "openrouter"
+  | "xai"
+  | "deepinfra"
+  | "replicate";
 
 export interface AIProviderState {
   provider: AIProvider;

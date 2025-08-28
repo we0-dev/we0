@@ -82,6 +82,96 @@ const fetchAzureOpenAIModels: Fetcher = async (_apiKey) => {
   return [];
 };
 
+const fetchMistralModels: Fetcher = async (apiKey) => {
+  const resp = await fetch("https://api.mistral.ai/v1/models", {
+    headers: { Authorization: `Bearer ${apiKey}` },
+  });
+  if (!resp.ok) return [];
+  const data = await resp.json();
+  return (data.data || []).map((m: any) => m.id as string);
+};
+
+const fetchCohereModels: Fetcher = async (apiKey) => {
+  const resp = await fetch("https://api.cohere.ai/v1/models", {
+    headers: { Authorization: `Bearer ${apiKey}` },
+  });
+  if (!resp.ok) return [];
+  const data = await resp.json();
+  return (data.models || []).map((m: any) => m.name as string);
+};
+
+const fetchPerplexityModels: Fetcher = async (apiKey) => {
+  const resp = await fetch("https://api.perplexity.ai/models", {
+    headers: { Authorization: `Bearer ${apiKey}` },
+  });
+  if (!resp.ok) return [];
+  const data = await resp.json();
+  return (data.models || []).map((m: any) => m.id as string);
+};
+
+const fetchTogetherModels: Fetcher = async (apiKey) => {
+  const resp = await fetch("https://api.together.xyz/v1/models", {
+    headers: { Authorization: `Bearer ${apiKey}` },
+  });
+  if (!resp.ok) return [];
+  const data = await resp.json();
+  return (data.data || []).map((m: any) => m.id as string);
+};
+
+const fetchHuggingFaceModels: Fetcher = async (apiKey) => {
+  const resp = await fetch("https://huggingface.co/api/models?limit=100", {
+    headers: apiKey ? { Authorization: `Bearer ${apiKey}` } : {},
+  });
+  if (!resp.ok) return [];
+  const data = await resp.json();
+  return (data || []).map((m: any) => m.modelId as string).filter(Boolean);
+};
+
+const fetchFireworksModels: Fetcher = async (apiKey) => {
+  const resp = await fetch("https://api.fireworks.ai/inference/v1/models", {
+    headers: { Authorization: `Bearer ${apiKey}` },
+  });
+  if (!resp.ok) return [];
+  const data = await resp.json();
+  return (data.data || []).map((m: any) => m.id as string);
+};
+
+const fetchOpenRouterModels: Fetcher = async (apiKey) => {
+  const resp = await fetch("https://openrouter.ai/api/v1/models", {
+    headers: { Authorization: `Bearer ${apiKey}` },
+  });
+  if (!resp.ok) return [];
+  const data = await resp.json();
+  return (data.data || []).map((m: any) => m.id as string);
+};
+
+const fetchXaiModels: Fetcher = async (apiKey) => {
+  const resp = await fetch("https://api.x.ai/v1/models", {
+    headers: { Authorization: `Bearer ${apiKey}` },
+  });
+  if (!resp.ok) return [];
+  const data = await resp.json();
+  return (data.data || []).map((m: any) => m.id as string);
+};
+
+const fetchDeepInfraModels: Fetcher = async (apiKey) => {
+  const resp = await fetch("https://api.deepinfra.com/v1/openai/models", {
+    headers: { Authorization: `Bearer ${apiKey}` },
+  });
+  if (!resp.ok) return [];
+  const data = await resp.json();
+  return (data.data || []).map((m: any) => m.id as string);
+};
+
+const fetchReplicateModels: Fetcher = async (apiKey) => {
+  const resp = await fetch("https://api.replicate.com/v1/models?limit=100", {
+    headers: { Authorization: `Bearer ${apiKey}` },
+  });
+  if (!resp.ok) return [];
+  const data = await resp.json();
+  return (data.results || []).map((m: any) => (m.owner && m.name ? `${m.owner}/${m.name}` : undefined)).filter(Boolean) as string[];
+};
+
 const fetchers: Record<AIProvider, Fetcher> = {
   openai: fetchOpenAIModels,
   anthropic: fetchAnthropicModels,
@@ -90,6 +180,16 @@ const fetchers: Record<AIProvider, Fetcher> = {
   deepseek: fetchDeepseekModels,
   ollama: fetchOllamaModels,
   "azure-openai": fetchAzureOpenAIModels,
+  mistral: fetchMistralModels,
+  cohere: fetchCohereModels,
+  perplexity: fetchPerplexityModels,
+  together: fetchTogetherModels,
+  huggingface: fetchHuggingFaceModels,
+  fireworks: fetchFireworksModels,
+  openrouter: fetchOpenRouterModels,
+  xai: fetchXaiModels,
+  deepinfra: fetchDeepInfraModels,
+  replicate: fetchReplicateModels,
 };
 
 export async function fetchModelsForProvider(

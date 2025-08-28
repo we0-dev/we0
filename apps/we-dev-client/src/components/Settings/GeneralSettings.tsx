@@ -223,6 +223,16 @@ export function GeneralSettings() {
     { value: "deepseek", label: "DeepSeek" },
     { value: "ollama", label: "Ollama (Local)" },
     { value: "azure-openai", label: "Azure OpenAI" },
+    { value: "mistral", label: "Mistral" },
+    { value: "cohere", label: "Cohere" },
+    { value: "perplexity", label: "Perplexity" },
+    { value: "together", label: "Together" },
+    { value: "huggingface", label: "Hugging Face" },
+    { value: "fireworks", label: "Fireworks" },
+    { value: "openrouter", label: "OpenRouter" },
+    { value: "xai", label: "xAI" },
+    { value: "deepinfra", label: "DeepInfra" },
+    { value: "replicate", label: "Replicate" },
   ];
 
   const handleProviderChange = async (newProvider: any) => {
