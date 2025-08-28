@@ -5,7 +5,7 @@ import WeIde from "./WeIde";
 import useTerminalStore from "@/stores/terminalSlice";
 import WeAPI from "./WeAPI";
 import { useTranslation } from "react-i18next";
-// import { Diff } from "./Diff";
+import { Diff } from "./Diff";
 
 const ipcRenderer = window?.electron?.ipcRenderer;
 
