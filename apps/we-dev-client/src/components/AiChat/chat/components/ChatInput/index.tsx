@@ -131,7 +131,7 @@ export const ChatInput: React.FC<ChatInputPropsType> = ({
   useEffect(() => {
     refreshCombined();
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, []);
+  }, [apiKeys]);
   const [showMentionMenu, setShowMentionMenu] = useState(false);
   const [selectedMentionIndex, setSelectedMentionIndex] = useState(0);
   const [mentionPosition, setMentionPosition] = useState({ top: 0, left: 0 });

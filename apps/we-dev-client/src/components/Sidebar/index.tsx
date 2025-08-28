@@ -89,7 +89,7 @@ export function Sidebar({
       }
       setCombinedModels(out)
     })()
-  }, [apiKeys])
+  }, [apiKeys, provider])
 
   // Load chat history
   const loadChatHistory = async () => {

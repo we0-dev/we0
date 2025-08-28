@@ -295,6 +295,8 @@ export function GeneralSettings() {
     try {
       localStorage.setItem('aiProviderConfig', JSON.stringify({ provider, apiKeys, selectedModel }));
       message.success('API settings saved');
+      // Force refresh models after save
+      handleProviderChange(provider);
     } catch {
       message.error('Failed to save settings');
     }
