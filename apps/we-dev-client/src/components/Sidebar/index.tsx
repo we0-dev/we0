@@ -5,6 +5,8 @@ import { db } from "../../utils/indexDB"
 import { eventEmitter } from "../AiChat/utils/EventEmitter"
 import useUserStore from "../../stores/userSlice"
 import { useTranslation } from "react-i18next"
+import { useAIProviderStore } from "@/stores/aiProviderSlice"
+import { fetchModelsForProvider } from "@/api/models"
 
 interface SidebarProps {
   isOpen: boolean
@@ -41,6 +43,53 @@ export function Sidebar({
     }[]
   >([])
   const [searchTerm, setSearchTerm] = useState("")
+  const {
+    provider,
+    selectedModel,
+    setProvider,
+    setSelectedModel,
+    setAvailableModels,
+    apiKeys,
+  } = useAIProviderStore()
+  const [combinedModels, setCombinedModels] = useState<Array<{ provider: string; id: string; label: string }>>([])
+
+  const providerOptions = [
+    { value: "openai", label: "OpenAI" },
+    { value: "anthropic", label: "Anthropic" },
+    { value: "google", label: "Google" },
+    { value: "groq", label: "Groq" },
+    { value: "deepseek", label: "DeepSeek" },
+    { value: "ollama", label: "Ollama" },
+    { value: "azure-openai", label: "Azure" },
+    { value: "mistral", label: "Mistral" },
+    { value: "cohere", label: "Cohere" },
+    { value: "perplexity", label: "Perplexity" },
+    { value: "together", label: "Together" },
+    { value: "huggingface", label: "Hugging Face" },
+    { value: "fireworks", label: "Fireworks" },
+    { value: "openrouter", label: "OpenRouter" },
+    { value: "xai", label: "xAI" },
+    { value: "deepinfra", label: "DeepInfra" },
+    { value: "replicate", label: "Replicate" },
+  ] as const
+
+  useEffect(() => {
+    (async () => {
+      const out: Array<{ provider: string; id: string; label: string }> = []
+      for (const p of providerOptions) {
+        const key = (apiKeys as any)[p.value] || ""
+        const needsKey = ["openai","anthropic","google","groq","azure-openai","mistral","cohere","perplexity","together","huggingface","fireworks","openrouter","xai","deepinfra","replicate"].includes(p.value)
+        if (needsKey && !key) continue
+        try {
+          const models = await fetchModelsForProvider(p.value as any, key)
+          models.forEach((m) => out.push({ provider: p.value, id: m, label: `${p.label} · ${m}` }))
+        } catch {
+          // ignore provider fetch failures
+        }
+      }
+      setCombinedModels(out)
+    })()
+  }, [apiKeys])
 
   // Load chat history
   const loadChatHistory = async () => {
@@ -320,6 +369,29 @@ export function Sidebar({
 
         {/* Bottom Section */}
         <div className="mt-auto border-t border-gray-200 dark:border-[#333333]">
+          {/* Models quick picker */}
+          <div className="px-2 py-2 border-b border-gray-200 dark:border-[#333333]">
+            <div className="text-[12px] text-gray-500 dark:text-gray-400 mb-1">Models</div>
+            <div className="max-h-40 overflow-y-auto rounded-md">
+              {combinedModels.length === 0 && (
+                <div className="text-[12px] text-gray-400 px-2 py-1">No models loaded</div>
+              )}
+              {combinedModels.map((m) => (
+                <button
+                  key={`${m.provider}:${m.id}`}
+                  onClick={() => {
+                    setProvider(m.provider as any)
+                    setSelectedModel(m.id)
+                    const list = combinedModels.filter(x => x.provider === m.provider).map(x => x.id)
+                    setAvailableModels(list)
+                  }}
+                  className={`w-full text-left px-2 py-1 rounded hover:bg-gray-100 dark:hover:bg-white/5 text-[13px] ${selectedModel===m.id && provider===m.provider ? 'bg-gray-100 dark:bg-white/5' : ''}`}
+                >
+                  {m.label}
+                </button>
+              ))}
+            </div>
+          </div>
           {/* Settings and Help */}
           <div className="border-b border-gray-200 dark:border-[#333333]">
             <button

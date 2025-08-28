@@ -291,6 +291,14 @@ export function GeneralSettings() {
       setSelectedModel(undefined);
     }
   };
+  const handleSaveApi = () => {
+    try {
+      localStorage.setItem('aiProviderConfig', JSON.stringify({ provider, apiKeys, selectedModel }));
+      message.success('API settings saved');
+    } catch {
+      message.error('Failed to save settings');
+    }
+  };
 
   useEffect(() => {
     localStorage.setItem("settingsConfig", JSON.stringify(formData));
@@ -886,6 +894,9 @@ export function GeneralSettings() {
                 onChange={handleApiKeyChange}
                 placeholder={"Enter API Key for " + provider}
               />
+            </div>
+            <div className="mt-2">
+              <button onClick={handleSaveApi} className="px-3 py-1.5 text-sm rounded-md bg-purple-600 text-white hover:bg-purple-700">Save</button>
             </div>
             <div className="mt-2 text-xs">
               <a
