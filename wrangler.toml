@@ -1,0 +1,5 @@
+name = "we-dev-pages"
+
+# Cloudflare Pages build settings (Wrangler-managed)
+pages_build_output_dir = "apps/we-dev-client/dist"
+

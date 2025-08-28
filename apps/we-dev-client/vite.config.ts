@@ -3,6 +3,7 @@ import react from "@vitejs/plugin-react";
 import electron from "vite-plugin-electron";
 import path from "path";
 import { viteCommonjs } from "@originjs/vite-plugin-commonjs";
+import { VitePWA } from 'vite-plugin-pwa';
 
 const isElectron = process.env.npm_lifecycle_event?.startsWith("electron:");
 
@@ -48,6 +49,75 @@ export default defineConfig(async ({ mode }) => {
       }),
 
       react(),
+      VitePWA({
+        registerType: 'autoUpdate',
+        workbox: {
+          globPatterns: ['**/*.{js,css,html,ico,png,svg}'],
+          maximumFileSizeToCacheInBytes: 5 * 1024 * 1024, // 5MB limit
+          runtimeCaching: [
+            {
+              urlPattern: /^https:\/\/api\.openai\.com\/.*/i,
+              handler: 'NetworkFirst',
+              options: {
+                cacheName: 'openai-api-cache',
+                expiration: {
+                  maxEntries: 50,
+                  maxAgeSeconds: 60 * 60 * 24, // 24 hours
+                },
+              },
+            },
+            {
+              urlPattern: /^https:\/\/openrouter\.ai\/.*/i,
+              handler: 'NetworkFirst',
+              options: {
+                cacheName: 'openrouter-api-cache',
+                expiration: {
+                  maxEntries: 50,
+                  maxAgeSeconds: 60 * 60 * 24, // 24 hours
+                },
+              },
+            },
+          ],
+        },
+        manifest: {
+          name: 'We Dev - AI Code Generator',
+          short_name: 'We Dev',
+          description: 'AI-powered code generation and development tool',
+          theme_color: '#7c3aed',
+          background_color: '#ffffff',
+          display: 'standalone',
+          orientation: 'portrait',
+          scope: '/',
+          start_url: '/',
+          icons: [
+            {
+              src: '/icon-192x192.svg',
+              sizes: '192x192',
+              type: 'image/svg+xml',
+            },
+            {
+              src: '/icon-512x512.svg',
+              sizes: '512x512',
+              type: 'image/svg+xml',
+            },
+            {
+              src: '/icon-192x192.svg',
+              sizes: '192x192',
+              type: 'image/svg+xml',
+              purpose: 'maskable',
+            },
+            {
+              src: '/icon-512x512.svg',
+              sizes: '512x512',
+              type: 'image/svg+xml',
+              purpose: 'maskable',
+            },
+          ],
+        },
+        devOptions: {
+          enabled: true,
+        },
+      }),
       electron([
         {
           // Main process entry file of the Electron App
