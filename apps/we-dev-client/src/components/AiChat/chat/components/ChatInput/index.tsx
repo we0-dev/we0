@@ -84,6 +84,35 @@ export const ChatInput: React.FC<ChatInputPropsType> = ({
     { value: "deepinfra", label: "DeepInfra" },
     { value: "replicate", label: "Replicate" },
   ];
+
+  const [combinedModels, setCombinedModels] = React.useState<Array<{ provider: string; id: string; label: string }>>([]);
+
+  const loadProviderModels = React.useCallback(async (prov: string) => {
+    const key = (apiKeys as any)[prov] || "";
+    const needsKey = ["openai", "anthropic", "google", "groq", "azure-openai", "mistral", "cohere", "perplexity", "together", "huggingface", "fireworks", "openrouter", "xai", "deepinfra", "replicate"].includes(prov);
+    if (needsKey && !key) return [] as string[];
+    const list = await fetchModelsForProvider(prov as any, key);
+    return list;
+  }, [apiKeys]);
+
+  const refreshCombined = React.useCallback(async () => {
+    const out: Array<{ provider: string; id: string; label: string }> = [];
+    for (const p of providerOptions) {
+      const models = await loadProviderModels(p.value);
+      models.forEach((m) => out.push({ provider: p.value, id: m, label: `${p.label} · ${m}` }));
+    }
+    setCombinedModels(out);
+    if (!selectedModel && out.length) {
+      setProvider(out[0].provider as any);
+      setSelectedModel(out[0].id);
+      setAvailableModels(out.filter(x => x.provider === out[0].provider).map(x => x.id));
+    }
+  }, [loadProviderModels, providerOptions, selectedModel, setProvider, setSelectedModel, setAvailableModels]);
+
+  useEffect(() => {
+    refreshCombined();
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []);
   const [showMentionMenu, setShowMentionMenu] = useState(false);
   const [selectedMentionIndex, setSelectedMentionIndex] = useState(0);
   const [mentionPosition, setMentionPosition] = useState({ top: 0, left: 0 });
@@ -409,43 +438,21 @@ export const ChatInput: React.FC<ChatInputPropsType> = ({
       <div className="max-w-[640px] w-full mx-auto bg-[#fff] dark:bg-[#18181a]">
         <div className="flex items-center gap-2 mb-2 text-xs">
           <select
-            className="px-2 py-1 rounded border border-gray-600/30 bg-transparent"
-            value={provider}
-            onChange={async (e) => {
-              const p = e.target.value as any;
-              setProvider(p);
-              const key = (apiKeys as any)[p] || "";
-              const needsKey = ["openai", "anthropic", "google", "groq", "azure-openai"].includes(p);
-              if (needsKey && !key) {
-                toast("Please set API key in Settings for this provider.");
-                setAvailableModels([]);
-                setSelectedModel("");
-                return;
-              }
-              const models = await fetchModelsForProvider(p, key);
-              setAvailableModels(models);
-              if (models.length) {
-                setSelectedModel(models[0]);
-              } else {
-                toast("No models returned for provider. Check key/permissions.");
-                setSelectedModel("");
-              }
+            className="px-2 py-1 rounded border border-gray-600/30 bg-transparent w-full"
+            value={selectedModel || ""}
+            onChange={(e) => {
+              const id = e.target.value;
+              const entry = combinedModels.find((x) => x.id === id);
+              if (!entry) return;
+              setProvider(entry.provider as any);
+              setSelectedModel(entry.id);
+              const modelsForProv = combinedModels.filter(x => x.provider === entry.provider).map(x => x.id);
+              setAvailableModels(modelsForProv);
             }}
           >
-            {providerOptions.map((p) => (
-              <option key={p.value} value={p.value}>
-                {p.label}
-              </option>
-            ))}
-          </select>
-          <select
-            className="px-2 py-1 rounded border border-gray-600/30 bg-transparent flex-1"
-            value={selectedModel || ""}
-            onChange={(e) => setSelectedModel(e.target.value)}
-          >
-            <option value="" disabled>select model</option>
-            {(availableModels || []).map((m) => (
-              <option key={m} value={m}>{m}</option>
+            <option value="" disabled>select model (provider · model)</option>
+            {combinedModels.map((m) => (
+              <option key={`${m.provider}:${m.id}`} value={m.id}>{m.label}</option>
             ))}
           </select>
         </div>

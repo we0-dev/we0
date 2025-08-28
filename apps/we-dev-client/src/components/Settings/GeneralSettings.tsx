@@ -869,14 +869,7 @@ export function GeneralSettings() {
             </div>
           </div>
 
-          <div>
-            <div className="mb-2 font-semibold">Default Model</div>
-            <CustomSelect
-              value={selectedModel}
-              onChange={(v: any) => setSelectedModel(v)}
-              options={(availableModels || []).map((m) => ({ value: m, label: m }))}
-            />
-          </div>
+          {/* Removed Default Model selection to centralize model choice in chat input */}
         </div>
       </div>
     </div>
