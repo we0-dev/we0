@@ -1,6 +1,6 @@
 name = "we-dev-pages"
 
-[pages]
-# Build output directory for Cloudflare Pages
-build_output_dir = "apps/we-dev-client/dist"
+# Cloudflare Pages build settings (Wrangler-managed)
+pages_build_output_dir = "apps/we-dev-client/dist"
+build_command = "cd apps/we-dev-client && pnpm i --ignore-scripts && pnpm run builds"
 
