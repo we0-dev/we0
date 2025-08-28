@@ -52,16 +52,15 @@ const fetchGroqModels: Fetcher = async (apiKey) => {
 
 const fetchDeepseekModels: Fetcher = async (apiKey) => {
   // DeepSeek OpenAI-compatible endpoint (requires API key and proper base URL via proxy or env)
-  // If you expose a proxy at /api/deepseek, adapt accordingly. Here we attempt the official endpoint.
   try {
     const resp = await fetch("https://api.deepseek.com/v1/models", {
       headers: { Authorization: `Bearer ${apiKey}` },
     });
-    if (!resp.ok) return ["deepseek-chat", "deepseek-reasoner", "DeepSeek-R1"];
+    if (!resp.ok) return [];
     const data = await resp.json();
     return (data.data || []).map((m: any) => m.id as string);
   } catch {
-    return ["deepseek-chat", "deepseek-reasoner", "DeepSeek-R1"];
+    return [];
   }
 };
 
