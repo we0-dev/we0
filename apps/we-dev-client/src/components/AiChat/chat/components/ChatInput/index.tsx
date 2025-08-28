@@ -455,9 +455,9 @@ export const ChatInput: React.FC<ChatInputPropsType> = ({
   return (
     <div className="px-1 py-2 ">
       <div className="max-w-[640px] w-full mx-auto bg-[#fff] dark:bg-[#18181a]">
-        <div className="flex items-center gap-2 mb-2 text-xs">
+        <div className="flex items-center gap-2 mb-2 text-xs px-2 py-1 rounded-md bg-white/70 dark:bg-white/[0.04] border border-gray-600/20">
           <select
-            className="px-2 py-1 rounded border border-gray-600/30 bg-transparent w-full"
+            className="px-2 py-1 rounded-md border border-gray-600/30 bg-transparent w-full hover:border-gray-500/50"
             value={selectedModel || ""}
             onChange={(e) => {
               const id = e.target.value;
@@ -476,7 +476,7 @@ export const ChatInput: React.FC<ChatInputPropsType> = ({
           </select>
         </div>
         {selectedModel && (
-          <div className="-mt-1 mb-2 text-[10px] text-right">
+          <div className="-mt-1 mb-2 text-[10px] text-right px-2">
             <a
               href={providerDocs[provider] || '#'}
               target="_blank"
