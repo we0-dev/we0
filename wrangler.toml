@@ -1,0 +1,6 @@
+name = "we-dev-pages"
+
+[pages]
+# Build output directory for Cloudflare Pages
+build_output_dir = "apps/we-dev-client/dist"
+
