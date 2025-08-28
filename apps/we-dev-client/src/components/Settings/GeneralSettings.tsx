@@ -276,10 +276,17 @@ export function GeneralSettings() {
   };
 
   const handleApiKeyChange = async (e: React.ChangeEvent<HTMLInputElement>) => {
-    const key = e.target.value;
-    setApiKey(provider, key);
+    const key = e.target.value.trim();
+    // Auto-detect provider by key prefix when possible
+    const detected = key.startsWith("sk-or-") ? "openrouter"
+      : key.startsWith("sk-") && provider !== "openrouter" ? provider
+      : provider;
+    if (detected !== provider) {
+      setProvider(detected as any);
+    }
+    setApiKey(detected as any, key);
     try {
-      const models = await fetchModelsForProvider(provider, key);
+      const models = await fetchModelsForProvider(detected as any, key);
       setAvailableModels(models);
       if (!models.includes(selectedModel || "")) setSelectedModel(models[0]);
       if (!models || models.length === 0) {

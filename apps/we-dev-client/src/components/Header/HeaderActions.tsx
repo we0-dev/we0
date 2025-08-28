@@ -133,7 +133,7 @@ export function HeaderActions() {
   };
   const publish = async () => {
     setIsDeploying(true);
-    const API_BASE = process.env.APP_BASE_URL;
+    const API_BASE = process.env.APP_BASE_URL || "";
     
     try {
       const webcontainer = await getWebContainerInstance();
