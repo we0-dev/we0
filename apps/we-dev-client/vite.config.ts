@@ -132,12 +132,12 @@ export default defineConfig(async ({ mode }) => {
       ]),
     ],
 
-    base: "./", 
+    base: "/", 
     build: {
       outDir: "dist",
       emptyOutDir: true,
       rollupOptions: {
-        external: ["@electron/remote", "electron"],
+        external: process.env.ELECTRON ? ["@electron/remote", "electron"] : [],
         output: {
           manualChunks(id) {
             if (id.includes("workspace/")) {
