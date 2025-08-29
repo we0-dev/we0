@@ -12,6 +12,9 @@ if [ ! -d "node_modules" ]; then
     pnpm install
 fi
 
+# Set environment for web build
+export ELECTRON=false
+
 # Build the application
 echo "Building application..."
 pnpm run build:web
@@ -20,6 +23,7 @@ pnpm run build:web
 echo "Copying Cloudflare Pages configuration..."
 cp public/_redirects dist/
 cp public/_headers dist/
+cp public/icon-*.svg dist/
 
 # Create a simple _worker.js for additional routing if needed
 cat > dist/_worker.js << 'EOF'

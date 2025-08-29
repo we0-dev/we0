@@ -14,6 +14,9 @@ export default defineConfig(async ({ mode }) => {
 
   process.env = { ...process.env, ...env };
 
+  // Check if building for web (not Electron)
+  const isWebBuild = !process.env.ELECTRON;
+
   return {
     plugins: [
       viteCommonjs(),
@@ -118,17 +121,19 @@ export default defineConfig(async ({ mode }) => {
           enabled: true,
         },
       }),
-      electron([
-        {
-          // Main process entry file of the Electron App
-          entry: "electron/main.ts",
-        },
-        {
-          entry: "electron/preload.ts",
-          onstart(options) {
-            options.reload();
+      // Only include Electron plugins when building for Electron
+      ...(isWebBuild ? [] : [
+        electron([
+          {
+            entry: "electron/main.ts",
           },
-        },
+          {
+            entry: "electron/preload.ts",
+            onstart(options) {
+              options.reload();
+            },
+          },
+        ])
       ]),
     ],
 
@@ -137,7 +142,7 @@ export default defineConfig(async ({ mode }) => {
       outDir: "dist",
       emptyOutDir: true,
       rollupOptions: {
-        external: process.env.ELECTRON ? ["@electron/remote", "electron"] : [],
+        external: isWebBuild ? [] : ["@electron/remote", "electron"],
         output: {
           manualChunks(id) {
             if (id.includes("workspace/")) {
@@ -148,6 +153,8 @@ export default defineConfig(async ({ mode }) => {
       },
       copyPublicDir: true, 
       assetsDir: "assets",
+      // Ensure proper chunking for web builds
+      chunkSizeWarningLimit: 1000,
     },
 
     server: {
@@ -170,6 +177,12 @@ export default defineConfig(async ({ mode }) => {
 
     define: {
       "process.env": env,
+      ...(isWebBuild ? {
+        // Mock Node.js globals for web builds
+        "process.platform": '"web"',
+        "process.execPath": '"/usr/bin/node"',
+        "process.env": "{}",
+      } : {}),
     },
 
     resolve: {
@@ -177,7 +190,17 @@ export default defineConfig(async ({ mode }) => {
         "@": path.resolve(__dirname, "src"),
         "@sketch-hq/sketch-file-format-ts": "@sketch-hq/sketch-file-format-ts",
         "ag-psd": "ag-psd",
-        "@electron/remote": "@electron/remote/main",
+        ...(isWebBuild ? {
+          // Node.js polyfills for web builds
+          "node:fs": false,
+          "node:path": false,
+          "node:os": false,
+          "child_process": false,
+          "events": false,
+          "fs": false,
+          "path": false,
+          "os": false,
+        } : { "@electron/remote": "@electron/remote/main" }),
       },
     },
 
@@ -189,12 +212,12 @@ export default defineConfig(async ({ mode }) => {
         "@codemirror/state",
         "seedrandom"
       ],
-      exclude: ["@electron/remote", "electron"],
+      exclude: isWebBuild ? [] : ["@electron/remote", "electron"],
       esbuildOptions: {
         target: "esnext",
       },
     },
 
-    publicDir: path.resolve(__dirname, "workspace"),
+    publicDir: isWebBuild ? "public" : path.resolve(__dirname, "workspace"),
   };
 });

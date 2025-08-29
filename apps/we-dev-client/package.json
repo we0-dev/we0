@@ -10,7 +10,7 @@
   "scripts": {
     "dev": "vite",
     "build": "cross-env ELECTRON=true vite build && electron-builder --mac --config electron-builder.json",
-    "build:web": "vite build",
+    "build:web": "cross-env ELECTRON=false vite build",
     "build:pages": "./scripts/build-pages.sh",
     "tsc": "tsc",
     "electron:dev": "vite",
