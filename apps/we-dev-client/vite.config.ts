@@ -148,6 +148,21 @@ export default defineConfig(async ({ mode }) => {
             if (id.includes("workspace/")) {
               return null;
             }
+            // Split vendor libraries for web builds
+            if (isWebBuild) {
+              if (id.includes('node_modules/react') || id.includes('node_modules/react-dom')) {
+                return 'vendor-react';
+              }
+              if (id.includes('node_modules/antd') || id.includes('node_modules/react-icons')) {
+                return 'vendor-ui';
+              }
+              if (id.includes('node_modules/zustand') || id.includes('node_modules/uuid')) {
+                return 'vendor-utils';
+              }
+              if (id.includes('node_modules/ai') || id.includes('node_modules/openai')) {
+                return 'vendor-ai';
+              }
+            }
           },
         },
       },
@@ -182,6 +197,12 @@ export default defineConfig(async ({ mode }) => {
         "process.platform": '"web"',
         "process.execPath": '"/usr/bin/node"',
         "process.env": "{}",
+        // Web-specific environment variables
+        "process.env.APP_BASE_URL": '"https://we0.ai"',
+        "process.env.VITE_APP_BASE_URL": '"https://we0.ai"',
+        "process.env.VITE_API_BASE_URL": '"https://we0.ai/api"',
+        "process.env.VITE_CHAT_API_URL": '"https://we0.ai/api/chat"',
+        "process.env.VITE_AUTH_API_URL": '"https://we0.ai/api/auth"',
       } : {}),
     },
 

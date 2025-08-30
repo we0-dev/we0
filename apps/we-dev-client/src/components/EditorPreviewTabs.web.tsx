@@ -1,5 +1,7 @@
 import { useState } from "react";
 import { useTranslation } from "react-i18next";
+import { ChatMode } from "@/types/chat";
+import useChatModeStore from "@/stores/chatModeSlice";
 
 const EditorPreviewTabs: React.FC = () => {
   const [showIframe, setShowIframe] = useState<string>("editor");
@@ -10,6 +12,7 @@ const EditorPreviewTabs: React.FC = () => {
     diff: "translate-x-full opacity-100"
   });
   const { t } = useTranslation();
+  const { mode } = useChatModeStore();
 
   const onToggle = (tab: string) => {
     setFrameStyleMap(prev => {
@@ -25,6 +28,141 @@ const EditorPreviewTabs: React.FC = () => {
     });
   };
 
+  // Web-specific content
+  const renderWebContent = (tab: string) => {
+    switch (tab) {
+      case 'editor':
+        return (
+          <div className="h-full w-full flex flex-col items-center justify-center bg-gray-50 dark:bg-gray-800 p-8">
+            <div className="text-center max-w-2xl">
+              <div className="w-20 h-20 bg-gradient-to-br from-purple-600 to-blue-600 rounded-full flex items-center justify-center mx-auto mb-6">
+                <span className="text-white text-3xl">💻</span>
+              </div>
+              <h3 className="text-2xl font-bold text-gray-900 dark:text-white mb-4">
+                Code Editor
+              </h3>
+              <p className="text-gray-600 dark:text-gray-300 mb-6 leading-relaxed">
+                The full-featured code editor with syntax highlighting, autocomplete, and AI assistance 
+                is available in the desktop application. Experience the power of intelligent code generation 
+                and real-time collaboration.
+              </p>
+              <div className="space-y-3 text-left">
+                <div className="flex items-center space-x-3">
+                  <div className="w-2 h-2 bg-green-500 rounded-full"></div>
+                  <span className="text-sm text-gray-600 dark:text-gray-400">Syntax highlighting for 100+ languages</span>
+                </div>
+                <div className="flex items-center space-x-3">
+                  <div className="w-2 h-2 bg-green-500 rounded-full"></div>
+                  <span className="text-sm text-gray-600 dark:text-gray-400">AI-powered code completion</span>
+                </div>
+                <div className="flex items-center space-x-3">
+                  <div className="w-2 h-2 bg-green-500 rounded-full"></div>
+                  <span className="text-sm text-gray-600 dark:text-gray-400">Integrated debugging tools</span>
+                </div>
+                <div className="flex items-center space-x-3">
+                  <div className="w-2 h-2 bg-green-500 rounded-full"></div>
+                  <span className="text-sm text-gray-600 dark:text-gray-400">Real-time collaboration</span>
+                </div>
+              </div>
+              <button 
+                onClick={() => window.open('https://we0.ai/download', '_blank')}
+                className="mt-6 bg-purple-600 hover:bg-purple-700 text-white px-6 py-3 rounded-lg font-medium transition-colors"
+              >
+                Download Desktop App
+              </button>
+            </div>
+          </div>
+        );
+
+      case 'preview':
+        return (
+          <div className="h-full w-full flex flex-col items-center justify-center bg-gray-50 dark:bg-gray-800 p-8">
+            <div className="text-center max-w-2xl">
+              <div className="w-20 h-20 bg-gradient-to-br from-green-600 to-teal-600 rounded-full flex items-center justify-center mx-auto mb-6">
+                <span className="text-white text-3xl">👁️</span>
+              </div>
+              <h3 className="text-2xl font-bold text-gray-900 dark:text-white mb-4">
+                Live Preview
+              </h3>
+              <p className="text-gray-600 dark:text-gray-300 mb-6 leading-relaxed">
+                See your changes in real-time with the integrated preview system. Test your applications 
+                instantly without switching between tools. Perfect for web development and UI design.
+              </p>
+              <div className="space-y-3 text-left">
+                <div className="flex items-center space-x-3">
+                  <div className="w-2 h-2 bg-green-500 rounded-full"></div>
+                  <span className="text-sm text-gray-600 dark:text-gray-400">Real-time preview updates</span>
+                </div>
+                <div className="flex items-center space-x-3">
+                  <div className="w-2 h-2 bg-green-500 rounded-full"></div>
+                  <span className="text-sm text-gray-600 dark:text-gray-400">Multiple device simulation</span>
+                </div>
+                <div className="flex items-center space-x-3">
+                  <div className="w-2 h-2 bg-green-500 rounded-full"></div>
+                  <span className="text-sm text-gray-600 dark:text-gray-400">Interactive debugging</span>
+                </div>
+                <div className="flex items-center space-x-3">
+                  <div className="w-2 h-2 bg-green-500 rounded-full"></div>
+                  <span className="text-sm text-gray-600 dark:text-gray-400">Performance monitoring</span>
+                </div>
+              </div>
+              <button 
+                onClick={() => window.open('https://we0.ai/download', '_blank')}
+                className="mt-6 bg-green-600 hover:bg-green-700 text-white px-6 py-3 rounded-lg font-medium transition-colors"
+              >
+                Get Full Preview Experience
+              </button>
+            </div>
+          </div>
+        );
+
+      case 'weApi':
+        return (
+          <div className="h-full w-full flex flex-col items-center justify-center bg-gray-50 dark:bg-gray-800 p-8">
+            <div className="text-center max-w-2xl">
+              <div className="w-20 h-20 bg-gradient-to-br from-blue-600 to-indigo-600 rounded-full flex items-center justify-center mx-auto mb-6">
+                <span className="text-white text-3xl">🔌</span>
+              </div>
+              <h3 className="text-2xl font-bold text-gray-900 dark:text-white mb-4">
+                WeChat API Integration
+              </h3>
+              <p className="text-gray-600 dark:text-gray-300 mb-6 leading-relaxed">
+                Seamlessly integrate with WeChat Mini Program development. Test APIs, manage projects, 
+                and deploy directly to WeChat's ecosystem with built-in tools and templates.
+              </p>
+              <div className="space-y-3 text-left">
+                <div className="flex items-center space-x-3">
+                  <div className="w-2 h-2 bg-blue-500 rounded-full"></div>
+                  <span className="text-sm text-gray-600 dark:text-gray-400">WeChat DevTools integration</span>
+                </div>
+                <div className="flex items-center space-x-3">
+                  <div className="w-2 h-2 bg-blue-500 rounded-full"></div>
+                  <span className="text-sm text-gray-600 dark:text-gray-400">API testing and validation</span>
+                </div>
+                <div className="flex items-center space-x-3">
+                  <div className="w-2 h-2 bg-blue-500 rounded-full"></div>
+                  <span className="text-sm text-gray-600 dark:text-gray-400">Mini Program templates</span>
+                </div>
+                <div className="flex items-center space-x-3">
+                  <div className="w-2 h-2 bg-blue-500 rounded-full"></div>
+                  <span className="text-sm text-gray-600 dark:text-gray-400">Direct deployment</span>
+                </div>
+              </div>
+              <button 
+                onClick={() => window.open('https://we0.ai/download', '_blank')}
+                className="mt-6 bg-blue-600 hover:bg-blue-700 text-white px-6 py-3 rounded-lg font-medium transition-colors"
+              >
+                Start WeChat Development
+              </button>
+            </div>
+          </div>
+        );
+
+      default:
+        return null;
+    }
+  };
+
   return (
     <div className="flex flex-col h-full">
       {/* Tab Buttons */}
@@ -33,19 +171,19 @@ const EditorPreviewTabs: React.FC = () => {
           active={showIframe === "editor"}
           onClick={() => onToggle("editor")}
           icon={<EditorIcon />}
-          label={t("Editor")}
+          label={t("Editor") || "Editor"}
         />
         <TabButton
           active={showIframe === "preview"}
           onClick={() => onToggle("preview")}
           icon={<PreviewIcon />}
-          label={t("Preview")}
+          label={t("Preview") || "Preview"}
         />
         <TabButton
           active={showIframe === "weApi"}
           onClick={() => onToggle("weApi")}
           icon={<ApiIcon />}
-          label={t("API")}
+          label={t("API") || "API"}
         />
       </div>
 
@@ -58,16 +196,7 @@ const EditorPreviewTabs: React.FC = () => {
       ${frameStyleMap["editor"]}
         `}
         >
-          <div className="h-full w-full flex items-center justify-center bg-gray-100 dark:bg-gray-800">
-            <div className="text-center">
-              <h3 className="text-lg font-medium text-gray-900 dark:text-white mb-2">
-                Web Editor
-              </h3>
-              <p className="text-gray-500 dark:text-gray-400">
-                The full editor is available in the desktop application
-              </p>
-            </div>
-          </div>
+          {renderWebContent('editor')}
         </div>
         <div
           className={`
@@ -76,16 +205,7 @@ const EditorPreviewTabs: React.FC = () => {
       ${frameStyleMap["preview"]}
         `}
         >
-          <div className="h-full w-full flex items-center justify-center bg-gray-100 dark:bg-gray-800">
-            <div className="text-center">
-              <h3 className="text-lg font-medium text-gray-900 dark:text-white mb-2">
-                Preview
-              </h3>
-              <p className="text-gray-500 dark:text-gray-400">
-                Preview functionality is available in the desktop application
-              </p>
-            </div>
-          </div>
+          {renderWebContent('preview')}
         </div>
         <div
           className={`
@@ -94,16 +214,7 @@ const EditorPreviewTabs: React.FC = () => {
           ${frameStyleMap["weApi"]}
         `}
         >
-          <div className="h-full w-full flex items-center justify-center bg-gray-100 dark:bg-gray-800">
-            <div className="text-center">
-              <h3 className="text-lg font-medium text-gray-900 dark:text-white mb-2">
-                WeChat API
-              </h3>
-              <p className="text-gray-500 dark:text-gray-400">
-                API functionality is available in the desktop application
-              </p>
-            </div>
-          </div>
+          {renderWebContent('weApi')}
         </div>
       </div>
     </div>
