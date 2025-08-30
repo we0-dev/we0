@@ -101,7 +101,7 @@ Supports quick start from the root directory.
 
 
 ## How to Install and Use
-  1. Go to https://we0.ai/.
+  1. Go to https://old.we0.ai/.
   2. Select Download for Mac or Windows to download the installer.
   3. Run the installer.
   4. Open the We0 application.
