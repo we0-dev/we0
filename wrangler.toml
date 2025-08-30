@@ -3,3 +3,6 @@ name = "we-dev-pages"
 # Cloudflare Pages build settings
 pages_build_output_dir = "apps/we-dev-client/dist"
 
+# Build command should be set in Cloudflare Dashboard:
+# pnpm run build:cloudflare
+

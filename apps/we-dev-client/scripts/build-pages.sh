@@ -17,7 +17,7 @@ export ELECTRON=false
 
 # Build the application
 echo "Building application..."
-pnpm run build:web
+pnpm run build:cloudflare
 
 # Copy Cloudflare Pages specific files
 echo "Copying Cloudflare Pages configuration..."

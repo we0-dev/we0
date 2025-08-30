@@ -15,6 +15,7 @@
     "tsc": "tsc",
     "electron:dev": "vite",
     "builds": "vite build",
+    "build:cloudflare": "vite build",
     "postinstall": "electron-rebuild -f -w node-pty --arch=x64 && vite build && electron-builder install-app-deps"
   },
   "main": "dist-electron/main.js",
