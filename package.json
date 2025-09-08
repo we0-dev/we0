@@ -1,11 +1,13 @@
 {
   "name": "we-dev",
   "private": true,
-  "packageManager": "pnpm@8.15.4",
+  "engines": {
+    "pnpm": ">=8.15.4",
+    "node": ">=18.0.0"
+  },
   "scripts": {
     "dev:next": "cd apps/we-dev-next && pnpm install && pnpm dev",
-    "dev:admin": "cd apps/we-dev-admin && pnpm install && pnpm dev",
-    "dev:client": "cd apps/we-dev-client  && pnpm dev",
+    "dev:client": "cd apps/we-dev-client && pnpm install && pnpm dev",
     "build:client": "cd apps/we-dev-client && pnpm builds"
   },
   "dependencies": {
