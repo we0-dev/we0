@@ -1,5 +1,6 @@
 import React from 'react';
 import { Radio, Input, Button, Upload, Space, Select } from 'antd';
+import type { RadioChangeEvent } from 'antd/es/radio';
 import { DeleteOutlined, PlusOutlined, UploadOutlined } from '@ant-design/icons';
 import { BodyType, RequestBody, FormDataItem } from '../types';
 
@@ -12,7 +13,7 @@ interface BodyEditorProps {
 }
 
 function BodyEditor({ bodyType = 'none', body = {}, onUpdate }: BodyEditorProps): JSX.Element {
-  const handleBodyTypeChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+  const handleBodyTypeChange = (e: RadioChangeEvent) => {
     const newBodyType = e.target.value as BodyType;
     onUpdate(newBodyType, body);
   };
@@ -71,7 +72,7 @@ function BodyEditor({ bodyType = 'none', body = {}, onUpdate }: BodyEditorProps)
         ) : (
           <Input
             placeholder="Value"
-            value={item.value}
+            value={typeof item.value === 'string' ? item.value : (item.value ? (item.value as File).name : '')}
             onChange={(e) => {
               const newFormData = [...(body.formData || [])];
               newFormData[index] = { ...item, value: e.target.value };
@@ -104,7 +105,7 @@ function BodyEditor({ bodyType = 'none', body = {}, onUpdate }: BodyEditorProps)
                 const jsonObj = JSON.parse(e.target.value);
                 handleBodyChange(jsonObj);
               } catch (e) {
-                handleBodyChange(e.target.value);
+                handleBodyChange((e as any).target.value);
               }
             }}
             placeholder="Enter JSON content"
