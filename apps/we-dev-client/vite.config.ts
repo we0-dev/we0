@@ -3,6 +3,7 @@ import react from "@vitejs/plugin-react";
 import electron from "vite-plugin-electron";
 import path from "path";
 import { viteCommonjs } from "@originjs/vite-plugin-commonjs";
+import { VitePWA } from 'vite-plugin-pwa';
 
 const isElectron = process.env.npm_lifecycle_event?.startsWith("electron:");
 
@@ -12,6 +13,9 @@ export default defineConfig(async ({ mode }) => {
   const env = loadEnv(mode, process.cwd(), "");
 
   process.env = { ...process.env, ...env };
+
+  // Check if building for web (not Electron)
+  const isWebBuild = !process.env.ELECTRON;
 
   return {
     plugins: [
@@ -48,36 +52,124 @@ export default defineConfig(async ({ mode }) => {
       }),
 
       react(),
-      electron([
-        {
-          // Main process entry file of the Electron App
-          entry: "electron/main.ts",
+      VitePWA({
+        registerType: 'autoUpdate',
+        workbox: {
+          globPatterns: ['**/*.{js,css,html,ico,png,svg}'],
+          maximumFileSizeToCacheInBytes: 5 * 1024 * 1024, // 5MB limit
+          runtimeCaching: [
+            {
+              urlPattern: /^https:\/\/api\.openai\.com\/.*/i,
+              handler: 'NetworkFirst',
+              options: {
+                cacheName: 'openai-api-cache',
+                expiration: {
+                  maxEntries: 50,
+                  maxAgeSeconds: 60 * 60 * 24, // 24 hours
+                },
+              },
+            },
+            {
+              urlPattern: /^https:\/\/openrouter\.ai\/.*/i,
+              handler: 'NetworkFirst',
+              options: {
+                cacheName: 'openrouter-api-cache',
+                expiration: {
+                  maxEntries: 50,
+                  maxAgeSeconds: 60 * 60 * 24, // 24 hours
+                },
+              },
+            },
+          ],
         },
-        {
-          entry: "electron/preload.ts",
-          onstart(options) {
-            options.reload();
+        manifest: {
+          name: 'We Dev - AI Code Generator',
+          short_name: 'We Dev',
+          description: 'AI-powered code generation and development tool',
+          theme_color: '#7c3aed',
+          background_color: '#ffffff',
+          display: 'standalone',
+          orientation: 'portrait',
+          scope: '/',
+          start_url: '/',
+          icons: [
+            {
+              src: '/icon-192x192.svg',
+              sizes: '192x192',
+              type: 'image/svg+xml',
+            },
+            {
+              src: '/icon-512x512.svg',
+              sizes: '512x512',
+              type: 'image/svg+xml',
+            },
+            {
+              src: '/icon-192x192.svg',
+              sizes: '192x192',
+              type: 'image/svg+xml',
+              purpose: 'maskable',
+            },
+            {
+              src: '/icon-512x512.svg',
+              sizes: '512x512',
+              type: 'image/svg+xml',
+              purpose: 'maskable',
+            },
+          ],
+        },
+        devOptions: {
+          enabled: true,
+        },
+      }),
+      // Only include Electron plugins when building for Electron
+      ...(isWebBuild ? [] : [
+        electron([
+          {
+            entry: "electron/main.ts",
           },
-        },
+          {
+            entry: "electron/preload.ts",
+            onstart(options) {
+              options.reload();
+            },
+          },
+        ])
       ]),
     ],
 
-    base: "./", 
+    base: "/", 
     build: {
       outDir: "dist",
       emptyOutDir: true,
       rollupOptions: {
-        external: ["@electron/remote", "electron"],
+        external: isWebBuild ? [] : ["@electron/remote", "electron"],
         output: {
           manualChunks(id) {
             if (id.includes("workspace/")) {
               return null;
+            }
+            // Split vendor libraries for web builds
+            if (isWebBuild) {
+              if (id.includes('node_modules/react') || id.includes('node_modules/react-dom')) {
+                return 'vendor-react';
+              }
+              if (id.includes('node_modules/antd') || id.includes('node_modules/react-icons')) {
+                return 'vendor-ui';
+              }
+              if (id.includes('node_modules/zustand') || id.includes('node_modules/uuid')) {
+                return 'vendor-utils';
+              }
+              if (id.includes('node_modules/ai') || id.includes('node_modules/openai')) {
+                return 'vendor-ai';
+              }
             }
           },
         },
       },
       copyPublicDir: true, 
       assetsDir: "assets",
+      // Ensure proper chunking for web builds
+      chunkSizeWarningLimit: 1000,
     },
 
     server: {
@@ -100,6 +192,18 @@ export default defineConfig(async ({ mode }) => {
 
     define: {
       "process.env": env,
+      ...(isWebBuild ? {
+        // Mock Node.js globals for web builds
+        "process.platform": '"web"',
+        "process.execPath": '"/usr/bin/node"',
+        "process.env": "{}",
+        // Web-specific environment variables
+        "process.env.APP_BASE_URL": '"https://we0.ai"',
+        "process.env.VITE_APP_BASE_URL": '"https://we0.ai"',
+        "process.env.VITE_API_BASE_URL": '"https://we0.ai/api"',
+        "process.env.VITE_CHAT_API_URL": '"https://we0.ai/api/chat"',
+        "process.env.VITE_AUTH_API_URL": '"https://we0.ai/api/auth"',
+      } : {}),
     },
 
     resolve: {
@@ -107,7 +211,17 @@ export default defineConfig(async ({ mode }) => {
         "@": path.resolve(__dirname, "src"),
         "@sketch-hq/sketch-file-format-ts": "@sketch-hq/sketch-file-format-ts",
         "ag-psd": "ag-psd",
-        "@electron/remote": "@electron/remote/main",
+        ...(isWebBuild ? {
+          // Node.js polyfills for web builds
+          "node:fs": false,
+          "node:path": false,
+          "node:os": false,
+          "child_process": false,
+          "events": false,
+          "fs": false,
+          "path": false,
+          "os": false,
+        } : { "@electron/remote": "@electron/remote/main" }),
       },
     },
 
@@ -119,12 +233,12 @@ export default defineConfig(async ({ mode }) => {
         "@codemirror/state",
         "seedrandom"
       ],
-      exclude: ["@electron/remote", "electron"],
+      exclude: isWebBuild ? [] : ["@electron/remote", "electron"],
       esbuildOptions: {
         target: "esnext",
       },
     },
 
-    publicDir: path.resolve(__dirname, "workspace"),
+    publicDir: isWebBuild ? "public" : path.resolve(__dirname, "workspace"),
   };
 });
