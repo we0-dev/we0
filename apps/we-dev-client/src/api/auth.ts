@@ -1,7 +1,9 @@
 import type { User } from "@/stores/userSlice"
+const BASE = process.env.APP_BASE_URL || "";
+
 export const authService = {
   async login(email: string, password: string) {
-    const res = await fetch(`${process.env.APP_BASE_URL}/api/auth/login`, {
+    const res = await fetch(`${BASE}/api/auth/login`, {
       method: "PUT",
       headers: { "Content-Type": "application/json" },
       body: JSON.stringify({ email, password, language: localStorage.getItem('language') }),
@@ -13,7 +15,7 @@ export const authService = {
   },
   async getUserInfo(token: string): Promise<User> {
     try {
-      const res = await fetch(`${process.env.APP_BASE_URL}/api/user`, {
+      const res = await fetch(`${BASE}/api/user`, {
         method: "GET",
         headers: {
           "Content-Type": "application/json",
@@ -28,7 +30,7 @@ export const authService = {
   },
 
   async register(username: string, email: string, password: string) {
-    const res = await fetch(`${process.env.APP_BASE_URL}/api/auth/register`, {
+    const res = await fetch(`${BASE}/api/auth/register`, {
       method: "POST",
       headers: { "Content-Type": "application/json" },
       body: JSON.stringify({ username, email, password, language: localStorage.getItem('language') }),
@@ -40,7 +42,7 @@ export const authService = {
   },
 
   async updatePassword(email: string, oldPassword: string, newPassword: string) {
-    const res = await fetch(`${process.env.APP_BASE_URL}/api/auth/update-password`, {
+    const res = await fetch(`${BASE}/api/auth/update-password`, {
       method: "PUT",
       headers: { "Content-Type": "application/json" },
       body: JSON.stringify({ 

@@ -5,16 +5,24 @@
 }
 @tailwind components;
 @tailwind utilities;
+/* Improved, unobtrusive scrollbars */
 * {
-  /* Firefox */
-  scrollbar-width: none;
-  /* IE 10+ */
-  -ms-overflow-style: none;
+  scrollbar-width: thin; /* Firefox */
+  -ms-overflow-style: auto; /* IE 10+ */
 }
-
-/* Webkit (Chrome, Safari, Edge) */
 *::-webkit-scrollbar {
-  display: none;
+  width: 8px;
+  height: 8px;
+}
+*::-webkit-scrollbar-track {
+  background: transparent;
+}
+*::-webkit-scrollbar-thumb {
+  background-color: rgba(100, 116, 139, 0.4);
+  border-radius: 999px;
+}
+.dark *::-webkit-scrollbar-thumb {
+  background-color: rgba(148, 163, 184, 0.35);
 }
 .ant-modal {
   top: unset;
@@ -90,5 +98,17 @@
   }
   body {
     @apply bg-background text-foreground;
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
+  }
+  ::selection {
+    background: hsl(var(--primary) / 0.15);
+  }
+  input, select, textarea, button {
+    @apply outline-none transition-colors duration-200 ease-out;
+  }
+  input:focus, select:focus, textarea:focus {
+    box-shadow: 0 0 0 3px hsl(var(--primary) / 0.2);
+    border-color: hsl(var(--primary));
   }
 }

@@ -7,6 +7,8 @@ import { useTranslation } from "react-i18next";
 import { Switch, Select, Input, Radio, message } from "antd";
 import { BackendSettings } from "./BackendSettings";
 import classNames from "classnames";
+import { useAIProviderStore } from "@/stores/aiProviderSlice";
+import { fetchModelsForProvider } from "@/api/models";
 
 interface OtherConfig {
   isBackEnd: boolean;
@@ -196,6 +198,116 @@ export function GeneralSettings() {
   const [currentTheme, setCurrentTheme] = useState(
     localStorage.getItem("theme") || "system"
   );
+
+  const {
+    provider,
+    apiKeys,
+    availableModels,
+    selectedModel,
+    setProvider,
+    setApiKey,
+    setAvailableModels,
+    setSelectedModel,
+    hydrateFromStorage,
+  } = useAIProviderStore();
+
+  useEffect(() => {
+    hydrateFromStorage();
+  }, [hydrateFromStorage]);
+
+  const providerOptions = [
+    { value: "openai", label: "OpenAI" },
+    { value: "anthropic", label: "Anthropic" },
+    { value: "google", label: "Google (Gemini)" },
+    { value: "groq", label: "Groq" },
+    { value: "deepseek", label: "DeepSeek" },
+    { value: "ollama", label: "Ollama (Local)" },
+    { value: "azure-openai", label: "Azure OpenAI" },
+    { value: "mistral", label: "Mistral" },
+    { value: "cohere", label: "Cohere" },
+    { value: "perplexity", label: "Perplexity" },
+    { value: "together", label: "Together" },
+    { value: "huggingface", label: "Hugging Face" },
+    { value: "fireworks", label: "Fireworks" },
+    { value: "openrouter", label: "OpenRouter" },
+    { value: "xai", label: "xAI" },
+    { value: "deepinfra", label: "DeepInfra" },
+    { value: "replicate", label: "Replicate" },
+  ];
+
+  const providerDocs: Record<string, string> = {
+    "openai": "https://platform.openai.com/docs/api-reference",
+    "anthropic": "https://docs.anthropic.com/en/api",
+    "google": "https://ai.google.dev/gemini-api/docs",
+    "groq": "https://console.groq.com/docs/overview",
+    "deepseek": "https://api-docs.deepseek.com",
+    "ollama": "https://github.com/ollama/ollama/blob/main/docs/api.md",
+    "azure-openai": "https://learn.microsoft.com/azure/ai-services/openai/reference",
+    "mistral": "https://docs.mistral.ai/api/",
+    "cohere": "https://docs.cohere.com/reference",
+    "perplexity": "https://docs.perplexity.ai",
+    "together": "https://docs.together.ai/docs/introduction",
+    "huggingface": "https://huggingface.co/docs/api-inference/index",
+    "fireworks": "https://readme.fireworks.ai/reference",
+    "openrouter": "https://openrouter.ai/docs",
+    "xai": "https://docs.x.ai/docs/api-reference",
+    "deepinfra": "https://deepinfra.com/docs",
+    "replicate": "https://replicate.com/docs/reference/http",
+  };
+
+  const handleProviderChange = async (newProvider: any) => {
+    setProvider(newProvider);
+    try {
+      const key = apiKeys[newProvider as keyof typeof apiKeys] || "";
+      const models = await fetchModelsForProvider(newProvider, key);
+      setAvailableModels(models);
+      setSelectedModel(models[0]);
+      const needsKey = ["openai", "anthropic", "google", "groq", "azure-openai"].includes(newProvider);
+      if (needsKey && !key) {
+        message.warning("Please set API key for the selected provider.");
+      } else if (needsKey && (!models || models.length === 0)) {
+        message.error("Failed to load models. Check API key/permissions.");
+      }
+    } catch (e) {
+      message.error("Error loading models for provider.");
+      setAvailableModels([]);
+      setSelectedModel(undefined);
+    }
+  };
+
+  const handleApiKeyChange = async (e: React.ChangeEvent<HTMLInputElement>) => {
+    const key = e.target.value.trim();
+    // Auto-detect provider by key prefix when possible
+    const detected = key.startsWith("sk-or-") ? "openrouter"
+      : key.startsWith("sk-") && provider !== "openrouter" ? provider
+      : provider;
+    if (detected !== provider) {
+      setProvider(detected as any);
+    }
+    setApiKey(detected as any, key);
+    try {
+      const models = await fetchModelsForProvider(detected as any, key);
+      setAvailableModels(models);
+      if (!models.includes(selectedModel || "")) setSelectedModel(models[0]);
+      if (!models || models.length === 0) {
+        message.warning("No models returned. Verify API key/plan.");
+      }
+    } catch {
+      message.error("Failed to fetch models. Check API key.");
+      setAvailableModels([]);
+      setSelectedModel(undefined);
+    }
+  };
+  const handleSaveApi = () => {
+    try {
+      localStorage.setItem('aiProviderConfig', JSON.stringify({ provider, apiKeys, selectedModel }));
+      message.success('API settings saved');
+      // Force refresh models after save
+      handleProviderChange(provider);
+    } catch {
+      message.error('Failed to save settings');
+    }
+  };
 
   useEffect(() => {
     localStorage.setItem("settingsConfig", JSON.stringify(formData));
@@ -776,6 +888,38 @@ export function GeneralSettings() {
               )}
             </div>
           )}
+
+          {/* AI Provider Settings */}
+          <div className="mt-4">
+            <div className="mb-2 font-semibold">AI Provider</div>
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-3">
+              <CustomSelect
+                value={provider}
+                onChange={handleProviderChange}
+                options={providerOptions}
+              />
+              <CustomInput
+                value={apiKeys[provider] || ""}
+                onChange={handleApiKeyChange}
+                placeholder={"Enter API Key for " + provider}
+              />
+            </div>
+            <div className="mt-2">
+              <button onClick={handleSaveApi} className="px-3 py-1.5 text-sm rounded-md bg-purple-600 text-white hover:bg-purple-700">Save</button>
+            </div>
+            <div className="mt-2 text-xs">
+              <a
+                href={providerDocs[provider.replace(" (Gemini)", "")] || "#"}
+                target="_blank"
+                rel="noreferrer"
+                className="text-blue-600 dark:text-blue-400 hover:underline"
+              >
+                View {providerOptions.find(p=>p.value===provider)?.label || provider} API docs
+              </a>
+            </div>
+          </div>
+
+          {/* Removed Default Model selection to centralize model choice in chat input */}
         </div>
       </div>
     </div>
