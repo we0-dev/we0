@@ -9,7 +9,7 @@ Unlike a simple page generator, We0.ai coordinates multiple AI agents across the
 Free trial: [https://we0.ai/zh](https://we0.ai/zh)  
 Product documentation: [https://docs.we0.ai/zh/getting-started/product-intro-and-reading-guide](https://docs.we0.ai/zh/getting-started/product-intro-and-reading-guide)
 
-![We0.ai](./docs/img/image-1.png)
+![We0.ai](./docs/img/image.jpg)
 
 ## What Is We0.ai?
 

@@ -9,7 +9,7 @@ We0.ai 不只是生成一个页面，而是协同多个 AI 智能体完成网站
 免费体验地址：[https://we0.ai/zh](https://we0.ai/zh)  
 新版产品文档：[https://docs.we0.ai/zh/getting-started/product-intro-and-reading-guide](https://docs.we0.ai/zh/getting-started/product-intro-and-reading-guide)
 
-![We0.ai](./img/image-1.png)
+![We0.ai](./img/image.jpg)
 
 ## 什么是 We0.ai？
 
