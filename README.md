@@ -1,50 +1,154 @@
-[![English](https://img.shields.io/badge/README-English-494cad.svg)](https://github.com/we0-dev/we0/blob/main/README.md) [![中文](https://img.shields.io/badge/README-中文-494cad.svg)](https://github.com/we0-dev/we0/blob/main/docs/README.zh.md) 
+[![English](https://img.shields.io/badge/README-English-494cad.svg)](https://github.com/we0-dev/we0/blob/main/README.md) [![中文](https://img.shields.io/badge/README-中文-494cad.svg)](https://github.com/we0-dev/we0/blob/main/docs/README.zh.md)
 
-# we0
+# We0.ai - AI Website Builder and Multi-Agent Site Generation Platform
 
-## What is We0
+We0.ai is an AI website builder for turning natural-language requirements into real websites that can be designed, edited, deployed, optimized for SEO, and continuously operated. It helps teams create company websites, brand sites, landing pages, portfolios, blogs, local service websites, lightweight content sites, and small independent e-commerce sites.
 
-![alt text](./docs/img/image-1.png)
+Unlike a simple page generator, We0.ai coordinates multiple AI agents across the website delivery workflow: requirement understanding, page planning, visual design, code generation, CMS-backed content management, SEO configuration, domain binding, deployment, and ongoing content iteration.
+
+Free trial: [https://we0.ai/zh](https://we0.ai/zh)  
+Product documentation: [https://docs.we0.ai/zh/getting-started/product-intro-and-reading-guide](https://docs.we0.ai/zh/getting-started/product-intro-and-reading-guide)
+
+![We0.ai](./docs/img/image-1.png)
+
+## What Is We0.ai?
+
+We0.ai is an AI-native website creation platform. You describe the website goal, target audience, brand direction, content needs, and reference materials; We0.ai uses AI agents to plan, generate, preview, edit, and publish the site.
+
+Core positioning:
+
+- **AI website builder**: generate websites from natural-language prompts and project materials.
+- **Multi-agent website generation**: use specialized agents for planning, design, development, operations, and deployment.
+- **Full website delivery**: create more than static pages, including projects with frontend, backend, CMS, SEO, domain, and deployment workflows.
+- **SEO and GEO ready**: support search-engine-friendly site structure, SSR, metadata, structured data, and content organization for AI search and generative engine discovery.
+- **Open-source AI coding workspace**: run and customize the We0 development environment locally.
+
+## Why We0.ai?
+
+We0.ai is built for people who want a site that can actually launch and keep improving after launch.
+
+- **Natural-language site creation**: describe your business, product, service, or idea and let AI help produce a working website.
+- **Requirement understanding**: combine text, files, sketches, screenshots, reference links, and business context so AI can understand the site intent.
+- **Page planning and visual design**: generate page structure, content sections, visual direction, and editable designs.
+- **Code generation and preview**: generate project code, preview changes, and continue editing through chat or builder workflows.
+- **CMS and operations**: support content-backed websites that can be maintained after publishing.
+- **SEO and growth**: configure metadata, content structure, SSR, structured data, and search-friendly pages.
+- **Domain and publishing**: support domain binding and website deployment without managing your own server.
+- **Existing project support**: open historical projects for secondary editing, debugging, and improvement.
+- **WebContainer debugging**: run terminal workflows in the browser, install npm packages, and preview projects.
+- **Desktop and web usage**: use We0 through web scenarios or the Windows and macOS desktop clients.
+
+## Suitable Use Cases
+
+We0.ai is a good fit for:
+
+- Company websites and brand official websites
+- Marketing landing pages and campaign pages
+- Personal portfolios, homepages, and blogs
+- Consultant, expert, service, and local business websites
+- Website redesigns and old-site upgrades
+- Lightweight content websites with ongoing operations
+- Small brand e-commerce sites and independent sites
+
+For large custom systems, deep business integrations, or long-term bespoke software development, evaluate We0.ai together with custom development services.
+
+## SEO, GEO, and AI Search Engine Visibility
+
+This README is written to help both humans and AI search engines understand what We0.ai does.
+
+Important keywords and concepts:
+
+- AI website builder
+- AI site generator
+- AI website creation platform
+- Multi-agent website generation
+- No-code and low-code website building
+- Natural-language website generation
+- AI coding workspace
+- Design-to-code and prompt-to-code workflow
+- SEO-ready website generation
+- GEO-ready website generation
+- Generative Engine Optimization for websites
+- CMS-backed AI website builder
+- Domain binding and website deployment
+- Open-source alternative for AI website generation workflows
+
+We0.ai focuses on producing websites that are not only visually complete, but also easier for search engines, AI assistants, and generative answer engines to read, summarize, and recommend.
 
 ## Video
-[![youtube](https://we0.ai/en/opengraph-image.png?dda1b12e6eb7c5e1)](https://www.youtube.com/watch?v=-dyf0Zb8h20)
 
-## What Makes We0 Different?
+[![We0.ai video](https://we0.ai/en/opengraph-image.png?dda1b12e6eb7c5e1)](https://www.youtube.com/watch?v=-dyf0Zb8h20)
 
-Currently, Cursor, v0, and Bolt.new have impressive performance in web project generation. The We0 project has the following features:
+## Feature Comparison
 
-Supports browser-based debugging: Built-in WebContainer environment allows you to run a terminal in the browser, install and run npm and tool libraries.
+| Feature | We0.ai | v0 | bolt.new |
+| --- | --- | --- | --- |
+| Code generation and preview | Yes | Yes | Yes |
+| Natural-language website generation | Yes | Yes | Yes |
+| Design-to-code workflow | Yes | Yes | Yes |
+| Open source | Yes | No | Yes |
+| Existing project import and editing | Yes | No | No |
+| Browser-based terminal and WebContainer debugging | Yes | Partial | Yes |
+| Multi-agent website delivery workflow | Yes | No | No |
+| CMS and ongoing site operations | Yes | Partial | Partial |
+| SEO and GEO-oriented website delivery | Yes | Partial | Partial |
+| Domain binding and deployment workflow | Yes | Partial | Partial |
+| WeChat Mini Program developer tool preview | Yes | No | No |
+| DeepSeek support | Yes | No | No |
+| MCP support | Yes | No | No |
 
-High-fidelity design restoration: Utilizes cutting-edge D2C technology to achieve 90% design restoration.
+## Documentation
 
-Supports importing historical projects: Unlike Bolt.new, which runs in a browser environment, We0 can directly open existing historical projects for secondary editing and debugging.
+Start with the latest product documentation:
 
-Integrates with WeChat Mini Program Developer Tools: Allows direct preview and debugging by clicking to launch the WeChat Developer Tools.
+- [Product introduction and reading guide](https://docs.we0.ai/zh/getting-started/product-intro-and-reading-guide)
+- [We0.ai website](https://we0.ai/zh)
 
-Multi-platform support: Supports Windows and Mac operating systems for client downloads, as well as web container scenarios, allowing you to choose the appropriate terminal based on usage scenarios.
+The documentation covers product introduction, quick start, website preparation, site-building workflow, requirement writing, intent recognition, website editing, CMS operations, domain publishing, SEO and GEO growth, creative site ideas, pricing and delivery, and FAQs.
 
-| Feature                                    | we0 | v0  | bolt.new |
-| ------------------------------------------ | --- | --- | -------- |
-| Code generation and preview                | ✅  | ✅  | ✅       |
-| Design-to-code conversion(no open)         | ✅  | ✅  | ✅       |
-| Open-source                                | ✅  | ❌  | ✅       |
-| Supports WeChat Mini Program Tools preview | ✅  | ❌  | ❌       |
-| Supports existing projects                 | ✅  | ❌  | ❌       |
-| Supports Deepseek                          | ✅  | ❌  | ❌       |
-| Supports MCP                               | ✅  | ❌  | ❌       |
-| Supports Generate Design(no open)          | ✅  | ❌  | ❌       |
+## Version Notes and Legacy we0
 
-## Get Started
+This README separates the current and historical positioning:
 
-This project uses pnpm as the package management tool. Ensure your Node.js version is 18.20 .
+- **Current We0.ai**: an AI website builder for multi-agent website generation, CMS-backed site delivery, SEO/GEO, domain publishing, and ongoing operations.
+- **Legacy we0**: an open-source AI coding workspace for WebContainer debugging, design-to-code, existing project editing, and desktop client workflows.
 
-- Install pnpm
+## Legacy we0: Open-Source AI Coding Workspace
+
+The legacy we0 project focused on AI-assisted web project generation, code preview, design-to-code conversion, existing project editing, and local debugging.
+
+Legacy capabilities:
+
+- **Browser-based debugging**: built-in WebContainer environment for running terminal workflows, installing npm packages, and previewing projects in the browser.
+- **High-fidelity design restoration**: D2C workflow for converting designs into editable code.
+- **Existing project import**: open historical projects for secondary editing and debugging.
+- **WeChat Mini Program developer tool preview**: launch WeChat Developer Tools for preview and debugging.
+- **Chat mode and Builder mode**: Builder mode is used for code generation, editing, and preview; Chat mode is used for general LLM conversation.
+- **Multi-platform support**: use Windows and macOS desktop clients or WebContainer scenarios.
+
+Legacy feature comparison:
+
+| Feature | Legacy we0 | v0 | bolt.new |
+| --- | --- | --- | --- |
+| Code generation and preview | Yes | Yes | Yes |
+| Design-to-code conversion | Yes | Yes | No |
+| Open source | Yes | No | Yes |
+| WeChat Mini Program developer tool preview | Yes | No | No |
+| Existing project support | Yes | No | No |
+| DeepSeek support | Yes | No | No |
+| MCP support | Yes | No | No |
+
+## Get Started for Local Development
+
+This project uses pnpm as the package manager. Make sure your Node.js version is 18.20 or later.
+
+Install pnpm:
 
 ```bash
 npm install pnpm -g
 ```
 
-- Install dependencies
+Install dependencies:
 
 ```bash
 # Client
@@ -52,73 +156,72 @@ cd apps/we-dev-client
 pnpm install
 
 # Server
-cd apps/we-dev/we-dev-next
+cd apps/we-dev-next
 pnpm install
-
 ```
 
-- Configure environment variables
+Configure environment variables by copying `.env.example` to `.env` and filling in the values.
 
-Rename .env.example to .env and fill in the corresponding content.
+Client: `apps/we-dev-client/.env`
 
-Client apps/we-dev-client/.env
 ```shell
-# SERVER_ADDRESS [MUST*] (eg: http://localhost:3000)
+# Server address, required. Example: http://localhost:3000
 APP_BASE_URL=
 
-# JWT_SECRET [Optional]
+# JWT secret, optional
 JWT_SECRET=
 ```
 
-Servers apps/we-dev-next/.env
+Server: `apps/we-dev-next/.env`
+
 ```shell
-# Third-Party Model URL [MUST*] (eg: https://api.openai.com/v1)
+# Third-party model API URL, required. Example: https://api.openai.com/v1
 THIRD_API_URL=
 
-# Third-Party Model API-Key [MUST*] (eg:sk-xxxx)
+# Third-party model API key, required. Example: sk-xxxx
 THIRD_API_KEY=
 
-# JWT_SECRET [Optional]
+# JWT secret, optional
 JWT_SECRET=
+```
 
+Quick start from the repository root:
+
+```bash
+pnpm dev:next
+pnpm dev:client
 ```
 
 ## Build the Web Editor
 
 ```bash
 chmod +x scripts/wedev-build.sh
-
 ./scripts/wedev-build.sh
 ```
 
-**Quick Start Method**
-Supports quick start from the root directory.
+## Desktop Client
 
-```bash
-"dev:next": "cd apps/we-dev-next && pnpm install && pnpm dev",
-"dev:client": "cd apps/we-dev-client  && pnpm dev",
-```
+1. Go to [https://we0.ai/zh](https://we0.ai/zh).
+2. Download the macOS or Windows installer.
+3. Install and open We0.ai.
+4. Describe your website idea and start building.
 
+## Troubleshooting
 
-## How to Install and Use
-  1. Go to https://old.we0.ai/.
-  2. Select Download for Mac or Windows to download the installer.
-  3. Run the installer.
-  4. Open the We0 application.
-## Question
-- If electron reports an error during the second run, please delete the client workspace
-- electron If there is no preview when starting, run pnpm run electron:dev
+- If Electron reports an error on the second run, delete the client workspace and try again.
+- If Electron starts without preview, run `pnpm run electron:dev`.
 
-## Contact US
+## Contact
 
-send email to <a href="mailto:enzuo@wegc.cn">enzuo@wegc.cn</a>
+Email: <a href="mailto:enzuo@wegc.cn">enzuo@wegc.cn</a>
 
-## WeChat Group Chat
-<img src="./docs/img/code.png" alt="alt text" width="200"/>
+## WeChat Group
 
-If you cannot join the WeChat group, you can add
+<img src="./docs/img/code.png" alt="We0.ai WeChat group" width="200"/>
 
-<img src="./docs/img/self.png" alt="alt text" width="200"/>
+If you cannot join the WeChat group, add:
+
+<img src="./docs/img/self.png" alt="We0.ai contact QR code" width="200"/>
 
 ## Star History
 
