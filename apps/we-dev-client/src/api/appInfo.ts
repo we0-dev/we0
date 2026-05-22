@@ -17,7 +17,8 @@ export const authService = {
             console.log(error)
         }
 
-        const res = await fetch(`${process.env.APP_BASE_URL}/api/appInfo?language=${language}`, {
+        const BASE = process.env.APP_BASE_URL || "";
+        const res = await fetch(`${BASE}/api/appInfo?language=${language}`, {
             method: "GET",
             headers: { "Content-Type": "application/json" },
         })

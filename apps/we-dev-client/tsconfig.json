@@ -16,6 +16,8 @@
       "vite/client"
     ],
     "moduleResolution": "Bundler",
+    "skipLibCheck": true,
+    "target": "ES2017",
     "outDir": "./dist",
     "baseUrl": ".",
     "paths": {

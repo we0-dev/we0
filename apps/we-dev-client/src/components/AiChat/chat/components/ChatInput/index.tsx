@@ -17,6 +17,8 @@ import useThemeStore from "@/stores/themeSlice";
 import { v4 as uuidv4 } from "uuid";
 import OptimizedPromptWord from "./OptimizedPromptWord";
 import useUserStore from "@/stores/userSlice";
+import { useAIProviderStore } from "@/stores/aiProviderSlice";
+import { fetchModelsForProvider } from "@/api/models";
 // import type { ModelOption } from './UploadButtons';
 
 export enum ChatMode {
@@ -54,6 +56,82 @@ export const ChatInput: React.FC<ChatInputPropsType> = ({
   const textareaRef = useRef<HTMLTextAreaElement>(null);
   const { t } = useTranslation();
   const { user } = useUserStore();
+  const {
+    provider,
+    availableModels,
+    selectedModel,
+    setProvider,
+    setSelectedModel,
+    setAvailableModels,
+    apiKeys,
+  } = useAIProviderStore();
+  const providerOptions = [
+    { value: "openai", label: "OpenAI" },
+    { value: "anthropic", label: "Anthropic" },
+    { value: "google", label: "Google" },
+    { value: "groq", label: "Groq" },
+    { value: "deepseek", label: "DeepSeek" },
+    { value: "ollama", label: "Ollama" },
+    { value: "azure-openai", label: "Azure" },
+    { value: "mistral", label: "Mistral" },
+    { value: "cohere", label: "Cohere" },
+    { value: "perplexity", label: "Perplexity" },
+    { value: "together", label: "Together" },
+    { value: "huggingface", label: "Hugging Face" },
+    { value: "fireworks", label: "Fireworks" },
+    { value: "openrouter", label: "OpenRouter" },
+    { value: "xai", label: "xAI" },
+    { value: "deepinfra", label: "DeepInfra" },
+    { value: "replicate", label: "Replicate" },
+  ];
+
+  const [combinedModels, setCombinedModels] = React.useState<Array<{ provider: string; id: string; label: string }>>([]);
+  const providerDocs: Record<string, string> = {
+    "openai": "https://platform.openai.com/docs/api-reference",
+    "anthropic": "https://docs.anthropic.com/en/api",
+    "google": "https://ai.google.dev/gemini-api/docs",
+    "groq": "https://console.groq.com/docs/overview",
+    "deepseek": "https://api-docs.deepseek.com",
+    "ollama": "https://github.com/ollama/ollama/blob/main/docs/api.md",
+    "azure-openai": "https://learn.microsoft.com/azure/ai-services/openai/reference",
+    "mistral": "https://docs.mistral.ai/api/",
+    "cohere": "https://docs.cohere.com/reference",
+    "perplexity": "https://docs.perplexity.ai",
+    "together": "https://docs.together.ai/docs/introduction",
+    "huggingface": "https://huggingface.co/docs/api-inference/index",
+    "fireworks": "https://readme.fireworks.ai/reference",
+    "openrouter": "https://openrouter.ai/docs",
+    "xai": "https://docs.x.ai/docs/api-reference",
+    "deepinfra": "https://deepinfra.com/docs",
+    "replicate": "https://replicate.com/docs/reference/http",
+  };
+
+  const loadProviderModels = React.useCallback(async (prov: string) => {
+    const key = (apiKeys as any)[prov] || "";
+    const needsKey = ["openai", "anthropic", "google", "groq", "azure-openai", "mistral", "cohere", "perplexity", "together", "huggingface", "fireworks", "openrouter", "xai", "deepinfra", "replicate"].includes(prov);
+    if (needsKey && !key) return [] as string[];
+    const list = await fetchModelsForProvider(prov as any, key);
+    return list;
+  }, [apiKeys]);
+
+  const refreshCombined = React.useCallback(async () => {
+    const out: Array<{ provider: string; id: string; label: string }> = [];
+    for (const p of providerOptions) {
+      const models = await loadProviderModels(p.value);
+      models.forEach((m) => out.push({ provider: p.value, id: m, label: `${p.label} · ${m}` }));
+    }
+    setCombinedModels(out);
+    if (!selectedModel && out.length) {
+      setProvider(out[0].provider as any);
+      setSelectedModel(out[0].id);
+      setAvailableModels(out.filter(x => x.provider === out[0].provider).map(x => x.id));
+    }
+  }, [loadProviderModels, providerOptions, selectedModel, setProvider, setSelectedModel, setAvailableModels]);
+
+  useEffect(() => {
+    refreshCombined();
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [apiKeys]);
   const [showMentionMenu, setShowMentionMenu] = useState(false);
   const [selectedMentionIndex, setSelectedMentionIndex] = useState(0);
   const [mentionPosition, setMentionPosition] = useState({ top: 0, left: 0 });
@@ -377,6 +455,38 @@ export const ChatInput: React.FC<ChatInputPropsType> = ({
   return (
     <div className="px-1 py-2 ">
       <div className="max-w-[640px] w-full mx-auto bg-[#fff] dark:bg-[#18181a]">
+        <div className="flex items-center gap-2 mb-2 text-xs px-2 py-1 rounded-md bg-white/70 dark:bg-white/[0.04] border border-gray-600/20">
+          <select
+            className="px-2 py-1 rounded-md border border-gray-600/30 bg-transparent w-full hover:border-gray-500/50"
+            value={selectedModel || ""}
+            onChange={(e) => {
+              const id = e.target.value;
+              const entry = combinedModels.find((x) => x.id === id);
+              if (!entry) return;
+              setProvider(entry.provider as any);
+              setSelectedModel(entry.id);
+              const modelsForProv = combinedModels.filter(x => x.provider === entry.provider).map(x => x.id);
+              setAvailableModels(modelsForProv);
+            }}
+          >
+            <option value="" disabled>select model (provider · model)</option>
+            {combinedModels.map((m) => (
+              <option key={`${m.provider}:${m.id}`} value={m.id}>{m.label}</option>
+            ))}
+          </select>
+        </div>
+        {selectedModel && (
+          <div className="-mt-1 mb-2 text-[10px] text-right px-2">
+            <a
+              href={providerDocs[provider] || '#'}
+              target="_blank"
+              rel="noreferrer"
+              className="text-blue-600 dark:text-blue-400 hover:underline"
+            >
+              Provider API docs
+            </a>
+          </div>
+        )}
         <ErrorDisplay
           errors={errors}
           onAttemptFix={async (error, index) => {

@@ -10,9 +10,12 @@
   "scripts": {
     "dev": "vite",
     "build": "cross-env ELECTRON=true vite build && electron-builder --mac --config electron-builder.json",
+    "build:web": "cross-env ELECTRON=false vite build",
+    "build:pages": "./scripts/build-pages.sh",
     "tsc": "tsc",
     "electron:dev": "vite",
     "builds": "vite build",
+    "build:cloudflare": "vite build",
     "postinstall": "electron-rebuild -f -w node-pty --arch=x64 && vite build && electron-builder install-app-deps"
   },
   "main": "dist-electron/main.js",
@@ -114,7 +117,8 @@
     "vite": "^5.0.8",
     "vite-plugin-dynamic-import": "^1.6.0",
     "vite-plugin-electron": "^0.15.5",
-    "vite-plugin-glsl": "^1.3.1"
+    "vite-plugin-glsl": "^1.3.1",
+    "vite-plugin-pwa": "^1.0.3"
   },
   "build": {
     "appId": "com.we0.app",

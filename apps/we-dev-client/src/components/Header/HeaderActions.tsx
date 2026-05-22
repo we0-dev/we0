@@ -9,6 +9,50 @@ import { getWebContainerInstance } from "../WeIde/services/webcontainer";
 import { useState } from "react";
 import { toast } from "react-toastify";
 
+async function tryExec(getEndTerminal: any, cmd: string) {
+  const res = await getEndTerminal().executeCommand(cmd);
+  return res?.exitCode === 0;
+}
+
+async function ensureInstallAndBuild(getEndTerminal: any) {
+  // Try pnpm
+  if (await tryExec(getEndTerminal, "pnpm -v")) {
+    if (!(await tryExec(getEndTerminal, "pnpm run build"))) {
+      await tryExec(getEndTerminal, "pnpm install --ignore-scripts");
+      if (await tryExec(getEndTerminal, "pnpm run build")) return true;
+    } else return true;
+  }
+
+  // Try npm
+  if (await tryExec(getEndTerminal, "npm -v")) {
+    if (!(await tryExec(getEndTerminal, "npm run build"))) {
+      (await tryExec(getEndTerminal, "npm ci")) || (await tryExec(getEndTerminal, "npm install"));
+      if (await tryExec(getEndTerminal, "npm run build")) return true;
+    } else return true;
+  }
+
+  // Try yarn
+  if (await tryExec(getEndTerminal, "yarn -v")) {
+    if (!(await tryExec(getEndTerminal, "yarn build"))) {
+      await tryExec(getEndTerminal, "yarn install");
+      if (await tryExec(getEndTerminal, "yarn build")) return true;
+    } else return true;
+  }
+
+  return false;
+}
+
+async function detectOutputDir(webcontainer: any): Promise<string | null> {
+  const candidates = ["dist", "build", "out", ".next/out", "public"].filter(Boolean);
+  for (const dir of candidates) {
+    try {
+      const stat = await webcontainer.fs.stat(dir);
+      if (stat?.type === "dir") return dir;
+    } catch {}
+  }
+  return null;
+}
+
 
 // 添加一个递归获取文件的辅助函数
 const getAllFiles = async (webcontainer: any, dirPath: string, zip: JSZip, baseDir: string = '') => {
@@ -89,23 +133,45 @@ export function HeaderActions() {
   };
   const publish = async () => {
     setIsDeploying(true);
-    const API_BASE = process.env.APP_BASE_URL;
+    const API_BASE = process.env.APP_BASE_URL || "";
     
     try {
       const webcontainer = await getWebContainerInstance();
-      
+      // Validate package.json and build script
+      try {
+        const pkgRaw = await webcontainer.fs.readFile("package.json", "utf-8");
+        const pkg = JSON.parse(pkgRaw || "{}");
+        if (!pkg?.scripts?.build) {
+          toast.error(t('header.error.missing_build_script') || 'No "build" script found in package.json');
+          setIsDeploying(false);
+          return;
+        }
+      } catch {
+        toast.error(t('header.error.missing_package_json') || 'package.json not found');
+        setIsDeploying(false);
+        return;
+      }
+
       newTerminal(async () => {
-        const res = await getEndTerminal().executeCommand("npm run build");
-        if (res.exitCode === 127) {
-          await getEndTerminal().executeCommand("npm install");
-          await getEndTerminal().executeCommand("npm run build");
+        toast.info(t('header.build.start') || 'Building project...');
+        const ok = await ensureInstallAndBuild(getEndTerminal);
+        if (!ok) {
+          toast.error(t('header.error.build_failed') || 'Build failed. Check console logs.');
+          setIsDeploying(false);
+          return;
         }
 
         try {
           const zip = new JSZip();
-          
+          // Detect output dir
+          const outDir = await detectOutputDir(webcontainer);
+          if (!outDir) {
+            toast.error(t('header.error.output_not_found') || 'Build output folder not found');
+            setIsDeploying(false);
+            return;
+          }
           // 使用新的递归函数获取所有文件
-          await getAllFiles(webcontainer, "dist", zip);
+          await getAllFiles(webcontainer, outDir, zip);
 
           // 生成并下载 zip 文件
           const blob = await zip.generateAsync({ type: "blob" });
